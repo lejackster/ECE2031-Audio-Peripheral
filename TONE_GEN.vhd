@@ -26,9 +26,26 @@ END TONE_GEN;
 
 ARCHITECTURE gen OF TONE_GEN IS 
 
+	TYPE octaveType IS (
+	Two,
+	Three,
+	Four,
+	Five,
+	Six,
+	Seven,
+	Eight);
+	
+	Type playingStatus IS (
+	playingNote,
+	notPlayingNote);
+
 	SIGNAL phase_register : STD_LOGIC_VECTOR(8 DOWNTO 0);
 	SIGNAL tuning_word    : STD_LOGIC_VECTOR(5 DOWNTO 0);
 	SIGNAL sounddata      : STD_LOGIC_VECTOR(7 DOWNTO 0);
+	SIGNAL octave         : octaveType;
+	SIGNAL playing        : playingStatus;
+	
+	
 	
 BEGIN
 
@@ -70,11 +87,10 @@ BEGIN
 		IF RESETN = '0' THEN
 			phase_register <= "000000000";
 		ELSIF RISING_EDGE(SAMPLE_CLK) THEN
-			IF tuning_word = "000000" THEN  -- if command is 0, return to 0 output.
-				phase_register <= "000000000";
-			ELSE
-				-- Increment the phase register by the tuning word.
+			IF playing = playingNote THEN
 				phase_register <= phase_register + ("000" & tuning_word);
+			ELSE
+				phase_register <= "000000000";
 			END IF;
 		END IF;
 	END PROCESS;
@@ -84,7 +100,33 @@ BEGIN
 		IF RESETN = '0' THEN
 			tuning_word <= "000000";
 		ELSIF RISING_EDGE(CS) THEN
-			tuning_word <= CMD(5 DOWNTO 0);
+			IF CMD(7 DOWNTO 0) = "00000001" THEN
+				playing <= playingNote;
+				tuning_word <= "000001";
+			ELSIF CMD(7 DOWNTO 0) = "00000010" THEN
+				playing <= playingNote;
+				tuning_word <= "000010";
+			ELSIF CMD(7 DOWNTO 0) = "00000100" THEN
+				playing <= playingNote;
+				tuning_word <= "000100";
+			ELSIF CMD(7 DOWNTO 0) = "00001000" THEN
+				playing <= playingNote;
+				tuning_word <= "001000";
+			ELSIF CMD(7 DOWNTO 0) = "00010000" THEN
+				playing <= playingNote;
+				tuning_word <= "010000";
+			ELSIF CMD(7 DOWNTO 0) = "00100000" THEN
+				playing <= playingNote;
+				tuning_word <= "100000";
+			ELSIF CMD(7 DOWNTO 0) = "01000000" THEN
+				playing <= playingNote;
+				tuning_word <= "100010";
+			ELSIF CMD(7 DOWNTO 0) = "10000000" THEN
+				playing <= playingNote;
+				tuning_word <= "100110";
+			ELSE
+				playing <= notPlayingNote;
+			END IF;
 		END IF;
 	END PROCESS;
 END gen;
