@@ -27,20 +27,22 @@ END TONE_GEN;
 ARCHITECTURE gen OF TONE_GEN IS 
 
 	TYPE octaveType IS (
-	Two,
-	Three,
-	Four,
-	Five,
-	Six,
-	Seven,
-	Eight);
+		Two,
+		Three,
+		Four,
+		Five,
+		Six,
+		Seven,
+		Eight
+	);
 	
 	Type playingStatus IS (
-	playingNote,
-	notPlayingNote);
+		playingNote,
+		notPlayingNote
+	);
 
-	SIGNAL phase_register : STD_LOGIC_VECTOR(8 DOWNTO 0);
-	SIGNAL tuning_word    : STD_LOGIC_VECTOR(5 DOWNTO 0);
+	SIGNAL phase_register : STD_LOGIC_VECTOR(14 DOWNTO 0);
+	SIGNAL tuning_word    : STD_LOGIC_VECTOR(11 DOWNTO 0);
 	SIGNAL sounddata      : STD_LOGIC_VECTOR(7 DOWNTO 0);
 	SIGNAL octave         : octaveType;
 	SIGNAL playing        : playingStatus;
@@ -67,7 +69,7 @@ BEGIN
 	PORT MAP (
 		clock0 => NOT(SAMPLE_CLK),
 		-- In this design, one bit of the phase register is a fractional bit
-		address_a => phase_register(8 downto 1),
+		address_a => phase_register(14 downto 1),
 		q_a => sounddata -- output is amplitude
 	);
 	
@@ -85,12 +87,12 @@ BEGIN
 	-- process to perform DDS
 	PROCESS(RESETN, SAMPLE_CLK) BEGIN
 		IF RESETN = '0' THEN
-			phase_register <= "000000000";
+			phase_register <= "000000000000000";
 		ELSIF RISING_EDGE(SAMPLE_CLK) THEN
 			IF playing = playingNote THEN
 				phase_register <= phase_register + ("000" & tuning_word);
 			ELSE
-				phase_register <= "000000000";
+				phase_register <= "000000000000000";
 			END IF;
 		END IF;
 	END PROCESS;
@@ -100,12 +102,30 @@ BEGIN
 		IF RESETN = '0' THEN
 			tuning_word <= "000000";
 		ELSIF RISING_EDGE(CS) THEN
-			IF CMD(7 DOWNTO 0) = "00000001" THEN
+			IF CMD(6 DOWNTO 0) = "0000001" THEN
 				playing <= playingNote;
-				tuning_word <= "000001";
-			ELSIF CMD(7 DOWNTO 0) = "00000010" THEN
+				tuning_word <= "000001000111";
+			ELSIF CMD(6 DOWNTO 0) = "0000010" THEN
 				playing <= playingNote;
-				tuning_word <= "000010";
+				tuning_word <= "000001001011";
+			ELSIF CMD(6 DOWNTO 0) = "0000011" THEN
+				playing <= playingNote;
+				tuning_word <= "000001010000";
+			ELSIF CMD(6 DOWNTO 0) = "0000100" THEN
+				playing <= playingNote;
+				tuning_word <= "000001010100";
+			ELSIF CMD(6 DOWNTO 0) = "0000101" THEN
+				playing <= playingNote;
+				tuning_word <= "000001011001";
+			ELSIF CMD(6 DOWNTO 0) = "0000110" THEN
+				playing <= playingNote;
+				tuning_word <= "000001011111";
+			ELSIF CMD(6 DOWNTO 0) = "0000111" THEN
+				playing <= playingNote;
+				tuning_word <= "000001100100";
+				
+
+			-- TODO	
 			ELSIF CMD(7 DOWNTO 0) = "00000100" THEN
 				playing <= playingNote;
 				tuning_word <= "000100";
