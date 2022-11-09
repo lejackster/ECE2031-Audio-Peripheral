@@ -69,7 +69,7 @@ BEGIN
 	PORT MAP (
 		clock0 => NOT(SAMPLE_CLK),
 		-- In this design, one bit of the phase register is a fractional bit
-		address_a => phase_register(14 downto 1),
+		address_a => phase_register(14 downto 7),
 		q_a => sounddata -- output is amplitude
 	);
 	
@@ -100,7 +100,7 @@ BEGIN
 	-- process to latch command data from SCOMP
 	PROCESS(RESETN, CS) BEGIN
 		IF RESETN = '0' THEN
-			tuning_word <= "000000";
+			tuning_word <= "000000000000";
 		ELSIF RISING_EDGE(CS) THEN
 			IF CMD(6 DOWNTO 0) = "0000001" THEN
 				playing <= playingNote;
@@ -138,27 +138,28 @@ BEGIN
 			ELSIF CMD(6 DOWNTO 0) = "0001100" THEN
 				playing <= playingNote;
 				tuning_word <= "000010000110"; -- G3
-				
-
-			-- TODO	
-			ELSIF CMD(7 DOWNTO 0) = "00000100" THEN
+			ELSIF CMD(6 DOWNTO 0) = "0001101" THEN
 				playing <= playingNote;
-				tuning_word <= "000100";
-			ELSIF CMD(7 DOWNTO 0) = "00001000" THEN
+				tuning_word <= "000010001110"; -- G#3/Ab3
+			ELSIF CMD(6 DOWNTO 0) = "0001110" THEN
 				playing <= playingNote;
-				tuning_word <= "001000";
-			ELSIF CMD(7 DOWNTO 0) = "00010000" THEN
+				tuning_word <= "000010010110"; -- A3
+			ELSIF CMD(6 DOWNTO 0) = "0001111" THEN
 				playing <= playingNote;
-				tuning_word <= "010000";
-			ELSIF CMD(7 DOWNTO 0) = "00100000" THEN
+				tuning_word <= "000010011111"; -- A#3/Bb3
+			ELSIF CMD(6 DOWNTO 0) = "0010000" THEN
 				playing <= playingNote;
-				tuning_word <= "100000";
-			ELSIF CMD(7 DOWNTO 0) = "01000000" THEN
+				tuning_word <= "000010101001"; -- B3
+			ELSIF CMD(6 DOWNTO 0) = "0010001" THEN
 				playing <= playingNote;
-				tuning_word <= "100010";
-			ELSIF CMD(7 DOWNTO 0) = "10000000" THEN
+				tuning_word <= "000010110011"; -- C4
+			ELSIF CMD(6 DOWNTO 0) = "0010010" THEN
 				playing <= playingNote;
-				tuning_word <= "100110";
+				tuning_word <= "000010111101"; -- C#4/Db4
+			ELSIF CMD(6 DOWNTO 0) = "0010011" THEN
+				playing <= playingNote;
+				tuning_word <= "000011001000"; -- D4
+			-- More notes TODO
 			ELSE
 				playing <= notPlayingNote;
 			END IF;
