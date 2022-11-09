@@ -104,25 +104,40 @@ BEGIN
 		ELSIF RISING_EDGE(CS) THEN
 			IF CMD(6 DOWNTO 0) = "0000001" THEN
 				playing <= playingNote;
-				tuning_word <= "000001000111";
+				tuning_word <= "000001000111"; -- Start of Octave 2, G#2/Ab2
 			ELSIF CMD(6 DOWNTO 0) = "0000010" THEN
 				playing <= playingNote;
-				tuning_word <= "000001001011";
+				tuning_word <= "000001001011"; -- A2
 			ELSIF CMD(6 DOWNTO 0) = "0000011" THEN
 				playing <= playingNote;
-				tuning_word <= "000001010000";
+				tuning_word <= "000001010000"; -- A#2/Bb2
 			ELSIF CMD(6 DOWNTO 0) = "0000100" THEN
 				playing <= playingNote;
-				tuning_word <= "000001010100";
+				tuning_word <= "000001010100"; -- B2
 			ELSIF CMD(6 DOWNTO 0) = "0000101" THEN
 				playing <= playingNote;
-				tuning_word <= "000001011001";
+				tuning_word <= "000001011001"; -- Start of Octave 3, C3
 			ELSIF CMD(6 DOWNTO 0) = "0000110" THEN
 				playing <= playingNote;
-				tuning_word <= "000001011111";
+				tuning_word <= "000001011111"; -- C#3/Db3
 			ELSIF CMD(6 DOWNTO 0) = "0000111" THEN
 				playing <= playingNote;
-				tuning_word <= "000001100100";
+				tuning_word <= "000001100100"; -- D3
+			ELSIF CMD(6 DOWNTO 0) = "0001000" THEN
+				playing <= playingNote;
+				tuning_word <= "000001101010"; -- D#3/Eb3
+			ELSIF CMD(6 DOWNTO 0) = "0001001" THEN
+				playing <= playingNote;
+				tuning_word <= "000001110001"; -- E3
+			ELSIF CMD(6 DOWNTO 0) = "0001010" THEN
+				playing <= playingNote;
+				tuning_word <= "000001110111"; -- F3
+			ELSIF CMD(6 DOWNTO 0) = "0001011" THEN
+				playing <= playingNote;
+				tuning_word <= "000001111110"; -- F#3/Gb3
+			ELSIF CMD(6 DOWNTO 0) = "0001100" THEN
+				playing <= playingNote;
+				tuning_word <= "000010000110"; -- G3
 				
 
 			-- TODO	
