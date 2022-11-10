@@ -2,4 +2,5 @@
 
 !SwitchSounds.asm
 !TONE_GEN.vhd
-!SOUND_SINE.mif
+!*.mif
+BeepTest.mif
