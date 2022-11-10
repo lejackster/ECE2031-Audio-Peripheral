@@ -1,5 +1,7 @@
 *
-
+!GenerateSineROM/
+!GenerateSineROM/src/
+!GenerateSineROM/src/*
 !SwitchSounds.asm
 !TONE_GEN.vhd
 !*.mif
