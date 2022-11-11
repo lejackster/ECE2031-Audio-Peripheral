@@ -1,0 +1,59 @@
+-- Altera Memory Initialization File (MIF)
+
+DEPTH = 2048;
+WIDTH = 16;
+
+ADDRESS_RADIX = HEX;
+DATA_RADIX = HEX;
+
+CONTENT
+  BEGIN
+    [000..7FF] : 0000;  -- Default to NOP
+
+           000 : 2801;  -- 	JUMP	Loop
+           001 : 9000;  -- 	IN 		Switches
+           002 : 1021;  -- 	STORE	SwitchVar
+           003 : 482A;  -- 	AND		Bit7
+           004 : 3810;  -- 	JPOS	OctaveUpWait
+           005 : 0821;  -- 	LOAD	SwitchVar
+           006 : 482B;  -- 	AND		Bit8
+           007 : 3814;  -- 	JPOS	OctaveDownWait
+           008 : 0820;  -- 	LOAD	Octave
+           009 : 6007;  -- 	SHIFT	7		; Shift 7 bits to make room for the scale
+           00A : 1020;  -- 	STORE	Octave
+           00B : 0821;  -- 	LOAD	SwitchVar
+           00C : 482D;  -- 	AND		Bit6_0	; Get scale
+           00D : 1820;  -- 	ADD		Octave	; Append the octave
+           00E : 9840;  -- 	OUT 	Output
+           00F : 2801;  -- 	JUMP	Loop
+           010 : 0821;  -- 	LOAD	SwitchVar
+           011 : 482A;  -- 	AND		Bit7
+           012 : 3810;  -- 	JPOS	OctaveUpWait
+           013 : 2818;  -- 	JUMP	OctaveUp
+           014 : 0821;  -- 	LOAD	SwitchVar
+           015 : 482B;  -- 	AND		Bit8
+           016 : 3814;  -- 	JPOS	OctaveDownWait
+           017 : 281C;  -- 	JUMP	OctaveDown
+           018 : 0820;  -- 	LOAD	Octave
+           019 : 6801;  -- 	ADDI	1
+           01A : 1020;  -- 	STORE	Octave
+           01B : 2801;  -- 	JUMP	Loop
+           01C : 0820;  -- 	LOAD	Octave
+           01D : 6FFF;  -- 	ADDI	-1
+           01E : 1020;  -- 	STORE	Octave
+           01F : 2801;  -- 	JUMP	Loop
+           020 : 0004;  -- Octave:		DW	4
+           021 : 0000;  -- SwitchVar:	DW	0
+           022 : 0000;  -- Scale:		DW	0
+           023 : 0001;  -- Bit0:		DW &B0000000001
+           024 : 0002;  -- Bit1:		DW &B0000000010
+           025 : 0004;  -- Bit2:		DW &B0000000100
+           026 : 0008;  -- Bit3:		DW &B0000001000
+           027 : 0010;  -- Bit4:		DW &B0000010000
+           028 : 0020;  -- Bit5:		DW &B0000100000
+           029 : 0040;  -- Bit6:		DW &B0001000000
+           02A : 0080;  -- Bit7:		DW &B0010000000
+           02B : 0100;  -- Bit8:		DW &B0100000000
+           02C : 0200;  -- Bit9:		DW &B1000000000
+           02D : 007F;  -- Bit6_0: 	DW &B0001111111
+  END;
