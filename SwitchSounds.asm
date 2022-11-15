@@ -9,29 +9,32 @@ ORG 0
 	JUMP	Loop
 	
 Loop:
-	IN 		Switches
+	IN 		Switches		; Take in switch bits
 	STORE	SwitchVar
-	AND		Bit7
-	JPOS	OctaveUpWait
+	AND		Bit7			; Check if SW7 is up for octave up
+	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
 
 	LOAD	SwitchVar
-	AND		Bit8
-	JPOS	OctaveDownWait
+	AND		Bit8			; Check if SW8 if up for octave down
+	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
 	
-	; Create output to the peripheral in the format understandable
-	; Octave 10-7 : SW6-0
+; Create output to the peripheral in the format understandable
+; Octave 10-7 : SW 6-0
 	LOAD	Octave
-	SHIFT	7		; Shift 7 bits to make room for the scale
+	SHIFT	7				; Shift right 7 bits to make room for scale
 	STORE	Octave
 	
 	LOAD	SwitchVar
-	AND		Bit6_0	; Get scale
-	ADD		Octave	; Append the octave
+	AND		Bit6_0			; Get scale
+	ADD		Octave			; Append the octave
+	OUT 	Output			; Out the bit vector to SCOMP
 	
-	OUT 	Output
+	LOAD	Octave
+	OUT		Hex0			; Out the current octave to SCOMP
 	JUMP	Loop
 	
-; make sure both switches 7 & 8 arent up maybe?
+; Make sure both switches 7 & 8 arent both up maybe?
+; Subroutines
 OctaveUpWait:
 	LOAD	SwitchVar
 	AND		Bit7
@@ -57,9 +60,9 @@ OctaveDown:
 	JUMP	Loop
 
 ;	Variables
-Octave:		DW	4
-SwitchVar:	DW	0
-Scale:		DW	0
+Octave:		DW 4
+SwitchVar:	DW 0
+Scale:		DW 0
 
 ;	Useful values
 Bit0:		DW &B0000000001
