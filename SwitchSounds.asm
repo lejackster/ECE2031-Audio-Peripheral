@@ -41,20 +41,14 @@ Loop:
 ; Make sure both switches 7 & 8 arent both up maybe?
 ; Subroutines
 
-; Added delay because for some reason when one of the octave SWs are up,
-; it loops through OctaveUpWait and OctaveUp infinitely until it is down
 OctaveUpWait:
-	CALL	Delay
-	
-	LOAD	SwitchVar
+	IN		Switches
 	AND		Bit7
 	JZERO	OctaveUp
 	JUMP	OctaveUpWait
 	
 OctaveDownWait:
-	CALL	Delay
-
-	LOAD	SwitchVar
+	IN		Switches
 	AND		Bit8
 	JZERO	OctaveDown
 	JUMP	OctaveDownWait
