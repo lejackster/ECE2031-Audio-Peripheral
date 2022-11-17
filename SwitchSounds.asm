@@ -19,33 +19,46 @@ Loop:
 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
 	
 ; Create output to the peripheral in the format understandable
-; Octave 10-7 : SW 6-0
+; Octave 9-7 : SW 6-0
+	
 	LOAD	Octave
-	SHIFT	7				; Shift right 7 bits to make room for scale
-	STORE	Octave
+	SHIFT	7
+	STORE 	Octave
 	
 	LOAD	SwitchVar
-	AND		Bit6_0			; Get scale
 	ADD		Octave			; Append the octave
 	OUT 	Output			; Out the bit vector to SCOMP
 	
 	LOAD	Octave
+	SHIFT	-7
+	STORE 	Octave
+	
+	LOAD	Octave
 	OUT		Hex0			; Out the current octave to SCOMP
+	
 	JUMP	Loop
 	
 ; Make sure both switches 7 & 8 arent both up maybe?
 ; Subroutines
+
+; Added delay because for some reason when one of the octave SWs are up,
+; it loops through OctaveUpWait and OctaveUp infinitely until it is down
 OctaveUpWait:
+	CALL	Delay
+	
 	LOAD	SwitchVar
 	AND		Bit7
-	JPOS	OctaveUpWait
-	JUMP	OctaveUp
+	JZERO	OctaveUp
+	JUMP	OctaveUpWait
 	
 OctaveDownWait:
+	CALL	Delay
+
 	LOAD	SwitchVar
 	AND		Bit8
-	JPOS	OctaveDownWait
-	JUMP	OctaveDown
+	JZERO	OctaveDown
+	JUMP	OctaveDownWait
+	
 	
 OctaveUp:
 	LOAD	Octave
@@ -59,27 +72,36 @@ OctaveDown:
 	STORE	Octave
 	JUMP	Loop
 
+Delay:
+	OUT		Timer
+WaitingLoop:
+	IN		Timer
+	ADDI	-3
+	JNEG	WaitingLoop
+	RETURN
+
 ;	Variables
 Octave:		DW 4
 SwitchVar:	DW 0
 Scale:		DW 0
 
 ;	Useful values
-Bit0:		DW &B0000000001
-Bit1:		DW &B0000000010
-Bit2:		DW &B0000000100
-Bit3:		DW &B0000001000
-Bit4:		DW &B0000010000
-Bit5:		DW &B0000100000
-Bit6:		DW &B0001000000
-Bit7:		DW &B0010000000
-Bit8:		DW &B0100000000
-Bit9:		DW &B1000000000
-Bit6_0: 	DW &B0001111111
+Bit0:		DW &B000000000001
+Bit1:		DW &B000000000010
+Bit2:		DW &B000000000100
+Bit3:		DW &B000000001000
+Bit4:		DW &B000000010000
+Bit5:		DW &B000000100000
+Bit6:		DW &B000001000000
+Bit7:		DW &B000010000000
+Bit8:		DW &B000100000000
+Bit9:		DW &B001000000000
+Bit6_0: 	DW &B000001111111
 
 ;	IO address constants
 Switches:  EQU 000
 LEDs:      EQU 001
+Timer:     EQU 002
 Hex0:      EQU 004
 Hex1:      EQU 005
 Output:	   EQU &H40
