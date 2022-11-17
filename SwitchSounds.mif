@@ -12,57 +12,64 @@ CONTENT
 
            000 : 2801;  -- 	JUMP	Loop
            001 : 9000;  -- 	IN 		Switches		; Take in switch bits
-           002 : 102A;  -- 	STORE	SwitchVar
-           003 : 4833;  -- 	AND		Bit7			; Check if SW7 is up for octave up
-           004 : 3814;  -- 	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
-           005 : 082A;  -- 	LOAD	SwitchVar
-           006 : 4834;  -- 	AND		Bit8			; Check if SW8 if up for octave down
-           007 : 3818;  -- 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
-           008 : 0829;  -- 	LOAD	Octave
+           002 : 102F;  -- 	STORE	SwitchVar
+           003 : 4838;  -- 	AND		Bit7			; Check if SW7 is up for octave up
+           004 : 3819;  -- 	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
+           005 : 082F;  -- 	LOAD	SwitchVar
+           006 : 4839;  -- 	AND		Bit8			; Check if SW8 if up for octave down
+           007 : 381D;  -- 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
+           008 : 082E;  -- 	LOAD	Octave			; Shift octave 7 places
            009 : 6007;  -- 	SHIFT	7
-           00A : 1029;  -- 	STORE 	Octave
-           00B : 082A;  -- 	LOAD	SwitchVar
-           00C : 1829;  -- 	ADD		Octave			; Append the octave
-           00D : 9840;  -- 	OUT 	Output			; Out the bit vector to SCOMP
-           00E : 0829;  -- 	LOAD	Octave
-           00F : 6017;  -- 	SHIFT	-7
-           010 : 1029;  -- 	STORE 	Octave
-           011 : 0829;  -- 	LOAD	Octave
-           012 : 9804;  -- 	OUT		Hex0			; Out the current octave to SCOMP
-           013 : 2801;  -- 	JUMP	Loop
-           014 : 9000;  -- 	IN		Switches
-           015 : 4833;  -- 	AND		Bit7
-           016 : 401C;  -- 	JZERO	OctaveUp
-           017 : 2814;  -- 	JUMP	OctaveUpWait
-           018 : 9000;  -- 	IN		Switches
-           019 : 4834;  -- 	AND		Bit8
-           01A : 4020;  -- 	JZERO	OctaveDown
-           01B : 2818;  -- 	JUMP	OctaveDownWait
-           01C : 0829;  -- 	LOAD	Octave
-           01D : 6801;  -- 	ADDI	1
-           01E : 1029;  -- 	STORE	Octave
-           01F : 2801;  -- 	JUMP	Loop
-           020 : 0829;  -- 	LOAD	Octave
-           021 : 6FFF;  -- 	ADDI	-1
-           022 : 1029;  -- 	STORE	Octave
-           023 : 2801;  -- 	JUMP	Loop
-           024 : 9802;  -- 	OUT		Timer
-           025 : 9002;  -- 	IN		Timer
-           026 : 6FFD;  -- 	ADDI	-3
-           027 : 3025;  -- 	JNEG	WaitingLoop
-           028 : 8800;  -- 	RETURN
-           029 : 0004;  -- Octave:		DW 4
-           02A : 0000;  -- SwitchVar:	DW 0
-           02B : 0000;  -- Scale:		DW 0
-           02C : 0001;  -- Bit0:		DW &B000000000001
-           02D : 0002;  -- Bit1:		DW &B000000000010
-           02E : 0004;  -- Bit2:		DW &B000000000100
-           02F : 0008;  -- Bit3:		DW &B000000001000
-           030 : 0010;  -- Bit4:		DW &B000000010000
-           031 : 0020;  -- Bit5:		DW &B000000100000
-           032 : 0040;  -- Bit6:		DW &B000001000000
-           033 : 0080;  -- Bit7:		DW &B000010000000
-           034 : 0100;  -- Bit8:		DW &B000100000000
-           035 : 0200;  -- Bit9:		DW &B001000000000
-           036 : 007F;  -- Bit6_0: 	DW &B000001111111
+           00A : 102E;  -- 	STORE 	Octave
+           00B : 9000;  -- 	IN		Switches		; Get toggle and shift 15 places
+           00C : 483A;  -- 	AND		Bit9
+           00D : 600F;  -- 	SHIFT	15
+           00E : 1030;  -- 	STORE	Channel
+           00F : 082F;  -- 	LOAD	SwitchVar
+           010 : 182E;  -- 	ADD		Octave			; Append the octave
+           011 : 1830;  -- 	ADD		Channel			; Append the channel toggle		
+           012 : 9840;  -- 	OUT 	Output			; Out the bit vector to SCOMP
+           013 : 082E;  -- 	LOAD	Octave
+           014 : 6017;  -- 	SHIFT	-7
+           015 : 102E;  -- 	STORE 	Octave
+           016 : 082E;  -- 	LOAD	Octave
+           017 : 9804;  -- 	OUT		Hex0			; Out the current octave to SCOMP
+           018 : 2801;  -- 	JUMP	Loop
+           019 : 9000;  -- 	IN		Switches
+           01A : 4838;  -- 	AND		Bit7
+           01B : 4021;  -- 	JZERO	OctaveUp
+           01C : 2819;  -- 	JUMP	OctaveUpWait
+           01D : 9000;  -- 	IN		Switches
+           01E : 4839;  -- 	AND		Bit8
+           01F : 4025;  -- 	JZERO	OctaveDown
+           020 : 281D;  -- 	JUMP	OctaveDownWait
+           021 : 082E;  -- 	LOAD	Octave
+           022 : 6801;  -- 	ADDI	1
+           023 : 102E;  -- 	STORE	Octave
+           024 : 2801;  -- 	JUMP	Loop
+           025 : 082E;  -- 	LOAD	Octave
+           026 : 6FFF;  -- 	ADDI	-1
+           027 : 102E;  -- 	STORE	Octave
+           028 : 2801;  -- 	JUMP	Loop
+           029 : 9802;  -- 	OUT		Timer
+           02A : 9002;  -- 	IN		Timer
+           02B : 6FFD;  -- 	ADDI	-3
+           02C : 302A;  -- 	JNEG	WaitingLoop
+           02D : 8800;  -- 	RETURN
+           02E : 0004;  -- Octave:		DW 4
+           02F : 0000;  -- SwitchVar:	DW 0
+           030 : 0000;  -- Channel:	DW 0
+           031 : 0001;  -- Bit0:		DW &B0000000001
+           032 : 0002;  -- Bit1:		DW &B0000000010
+           033 : 0004;  -- Bit2:		DW &B0000000100
+           034 : 0008;  -- Bit3:		DW &B0000001000
+           035 : 0010;  -- Bit4:		DW &B0000010000
+           036 : 0020;  -- Bit5:		DW &B0000100000
+           037 : 0040;  -- Bit6:		DW &B0001000000
+           038 : 0080;  -- Bit7:		DW &B0010000000
+           039 : 0100;  -- Bit8:		DW &B0100000000
+           03A : 0200;  -- Bit9:		DW &B1000000000
+           03B : 007F;  -- Bit6_0: 	DW &B0001111111
+           03C : 8000;  -- Bit15:		DW &B1000000000000000
+           03D : FFFF;  -- Bit15_0:	DW &B1111111111111111
   END;

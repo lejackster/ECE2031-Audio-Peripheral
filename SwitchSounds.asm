@@ -18,15 +18,22 @@ Loop:
 	AND		Bit8			; Check if SW8 if up for octave down
 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
 	
-; Create output to the peripheral in the format understandable
-; Octave 9-7 : SW 6-0
 	
-	LOAD	Octave
+; Create output to the peripheral in the format understandable
+; Channel 15 : Octave 9-7 : SW 6-0
+	
+	LOAD	Octave			; Shift octave 7 places
 	SHIFT	7
 	STORE 	Octave
 	
+	IN		Switches		; Get toggle and shift 15 places
+	AND		Bit9
+	SHIFT	15
+	STORE	Channel
+	
 	LOAD	SwitchVar
 	ADD		Octave			; Append the octave
+	ADD		Channel			; Append the channel toggle		
 	OUT 	Output			; Out the bit vector to SCOMP
 	
 	LOAD	Octave
@@ -39,27 +46,25 @@ Loop:
 	JUMP	Loop
 	
 ; Make sure both switches 7 & 8 arent both up maybe?
+
 ; Subroutines
 
+; Octaves
 OctaveUpWait:
 	IN		Switches
 	AND		Bit7
 	JZERO	OctaveUp
 	JUMP	OctaveUpWait
-	
 OctaveDownWait:
 	IN		Switches
 	AND		Bit8
 	JZERO	OctaveDown
 	JUMP	OctaveDownWait
-	
-	
 OctaveUp:
 	LOAD	Octave
 	ADDI	1
 	STORE	Octave
 	JUMP	Loop
-	
 OctaveDown:
 	LOAD	Octave
 	ADDI	-1
@@ -77,20 +82,22 @@ WaitingLoop:
 ;	Variables
 Octave:		DW 4
 SwitchVar:	DW 0
-Scale:		DW 0
+Channel:	DW 0
 
 ;	Useful values
-Bit0:		DW &B000000000001
-Bit1:		DW &B000000000010
-Bit2:		DW &B000000000100
-Bit3:		DW &B000000001000
-Bit4:		DW &B000000010000
-Bit5:		DW &B000000100000
-Bit6:		DW &B000001000000
-Bit7:		DW &B000010000000
-Bit8:		DW &B000100000000
-Bit9:		DW &B001000000000
-Bit6_0: 	DW &B000001111111
+Bit0:		DW &B0000000001
+Bit1:		DW &B0000000010
+Bit2:		DW &B0000000100
+Bit3:		DW &B0000001000
+Bit4:		DW &B0000010000
+Bit5:		DW &B0000100000
+Bit6:		DW &B0001000000
+Bit7:		DW &B0010000000
+Bit8:		DW &B0100000000
+Bit9:		DW &B1000000000
+Bit6_0: 	DW &B0001111111
+Bit15:		DW &B1000000000000000
+Bit15_0:	DW &B1111111111111111
 
 ;	IO address constants
 Switches:  EQU 000
