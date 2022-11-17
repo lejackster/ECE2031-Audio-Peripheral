@@ -22,8 +22,9 @@ Loop:
 ; Create output to the peripheral in the format understandable
 ; Channel 15 : Octave 9-7 : SW 6-0
 	
-	LOAD	Octave			; Shift octave 7 places
-	SHIFT	7
+	LOAD	Octave			
+	SHIFT	7				; Shift octave 7 places
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
 	STORE 	Octave
 	
 	IN		Switches		; Get toggle and shift 15 places
@@ -96,6 +97,7 @@ Bit7:		DW &B0010000000
 Bit8:		DW &B0100000000
 Bit9:		DW &B1000000000
 Bit6_0: 	DW &B0001111111
+Bit9_7:		DW &B1110000000
 Bit15:		DW &B1000000000000000
 Bit15_0:	DW &B1111111111111111
 
