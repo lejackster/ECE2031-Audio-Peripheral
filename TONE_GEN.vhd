@@ -45,6 +45,7 @@ ARCHITECTURE gen OF TONE_GEN IS
 	SIGNAL playing_current        : playingStatus;
    SIGNAL playing_L        		: playingStatus;
    SIGNAL playing_R        		: playingStatus;
+	SIGNAL LR_toggle					: STD_LOGIC;
    
    
 BEGIN
@@ -65,7 +66,7 @@ BEGIN
       power_up_uninitialized => "FALSE"
    )
    PORT MAP (
-      clock0 => NOT(ROM_CLK), -- NOT is optional since different clocks are used
+      clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
       address_a => phase_register_current(14 DOWNTO 2),
       q_a => sounddata_current -- output is amplitude
@@ -83,13 +84,27 @@ BEGIN
    R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
    
 	-- process to switch between multiple channels
-	PROCESS(CHANNEL_CLK) BEGIN
-      IF CHANNEL_CLK = '1' THEN
-         phase_register_current <= phase_register_L;
-			sounddata_L <= sounddata_current;
-		ELSE
-         phase_register_current <= phase_register_R;
-			sounddata_R <= sounddata_current;
+	PROCESS(ROM_CLK) BEGIN
+      IF RISING_EDGE(ROM_CLK) THEN
+			IF LR_toggle = '1' THEN
+				LR_toggle <= '0';
+				
+				sounddata_R <= sounddata_current;
+				sounddata_L <= sounddata_L;
+				
+				phase_register_current <= phase_register_L;
+				
+			ELSE
+				LR_toggle <= '1';
+				
+				sounddata_L <= sounddata_current;
+				sounddata_R <= sounddata_R;
+				
+				phase_register_current <= phase_register_R;
+			END IF;
+		ELSE -- is this needed?
+			sounddata_L <= sounddata_L;
+			sounddata_R <= sounddata_R;
       END IF;
    END PROCESS;
 	
@@ -364,10 +379,14 @@ BEGIN
          END CASE;
 			IF CMD(15) = '1' THEN
 				playing_L <= playing_current;
+				playing_R <= playing_R;
 				tuning_word_L <= tuning_word_current;
+				tuning_word_R <= tuning_word_R;
 			ELSE
 				playing_R <= playing_current;
+				playing_L <= playing_L;
 				tuning_word_R <= tuning_word_current;
+				tuning_word_L <= tuning_word_L;
 			END IF;
       END IF;
    END PROCESS;
