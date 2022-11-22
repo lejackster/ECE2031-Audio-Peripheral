@@ -83,7 +83,7 @@ BEGIN
 			IF LR_toggle = '1' THEN
 				LR_toggle <= '0';
 				
-				-- read right, load left
+				-- read right from ROM, load left into ROM
 				sounddata_R <= sounddata_current;
 				sounddata_L <= sounddata_L;
 				
@@ -92,15 +92,12 @@ BEGIN
 			ELSE
 				LR_toggle <= '1';
 				
-				-- read left, load right
+				-- read left from ROM, load right into ROM
 				sounddata_L <= sounddata_current;
 				sounddata_R <= sounddata_R;
 				
 				phase_register_current <= phase_register_R;
 			END IF;
-		ELSE
-			sounddata_L <= sounddata_L;
-			sounddata_R <= sounddata_R;
       END IF;
    END PROCESS;
 	
@@ -373,8 +370,7 @@ BEGIN
             WHEN OTHERS =>
                playing_current <= notPlayingNote;
          END CASE;
-		END IF;
-		IF FALLING_EDGE(CS) THEN
+		ELSIF FALLING_EDGE(CS) THEN
 			IF CMD(15) = '1' THEN
 				playing_L <= playing_current;
 				playing_R <= playing_R;
@@ -386,11 +382,6 @@ BEGIN
 				tuning_word_R <= tuning_word_current;
 				tuning_word_L <= tuning_word_L;
 			END IF;
-		ELSE
-			playing_L <= playing_L;
-			playing_R <= playing_R;
-			tuning_word_L <= tuning_word_L;
-			tuning_word_R <= tuning_word_R;
 		END IF;
    END PROCESS;
 END gen;
