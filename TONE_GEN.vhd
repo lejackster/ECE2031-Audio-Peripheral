@@ -1,8 +1,3 @@
--- Simple DDS tone generator.
--- 5-bit tuning word
--- 9-bit phase register
--- 256 x 8-bit ROM.
-
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.STD_LOGIC_ARITH.ALL;
@@ -18,8 +13,7 @@ ENTITY TONE_GEN IS
       CMD        : IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
       CS         : IN  STD_LOGIC;
       SAMPLE_CLK : IN  STD_LOGIC;
-		ROM_CLK	  : IN  STD_LOGIC; -- Fastest clock to access ROM multiple times per sample
-		CHANNEL_CLK: IN  STD_LOGIC; -- Faster clock to switch channels in between samples
+		ROM_CLK	  : IN  STD_LOGIC; -- Faster clock to switch channels in between samples
       RESETN     : IN  STD_LOGIC;
       L_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
       R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
@@ -89,6 +83,7 @@ BEGIN
 			IF LR_toggle = '1' THEN
 				LR_toggle <= '0';
 				
+				-- read right, load left
 				sounddata_R <= sounddata_current;
 				sounddata_L <= sounddata_L;
 				
@@ -97,12 +92,13 @@ BEGIN
 			ELSE
 				LR_toggle <= '1';
 				
+				-- read left, load right
 				sounddata_L <= sounddata_current;
 				sounddata_R <= sounddata_R;
 				
 				phase_register_current <= phase_register_R;
 			END IF;
-		ELSE -- is this needed?
+		ELSE
 			sounddata_L <= sounddata_L;
 			sounddata_R <= sounddata_R;
       END IF;
@@ -120,7 +116,7 @@ BEGIN
             phase_register_L <= "000000000000000";
          END IF;
 			IF playing_R = playingNote THEN
-            phase_register_R <= phase_register_R + ("000" & tuning_word_R);
+				phase_register_R <= phase_register_R + ("000" & tuning_word_R);
          ELSE
             phase_register_R <= "000000000000000";
          END IF;
@@ -136,16 +132,16 @@ BEGIN
          CASE CMD(10 DOWNTO 7) IS
             WHEN "0010" => -- Octave 2
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0110000" =>
+                  WHEN "0000110" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001000111"; -- Start of Octave 2, G#2/Ab2
-                  WHEN "0100000" =>
+                  WHEN "0000010" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001001011"; -- A2
-                  WHEN "1100000" =>
+                  WHEN "0000011" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001010000"; -- A#2/Bb2
-                  WHEN "1000000" =>
+                  WHEN "0000001" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001010100"; -- B2
                   WHEN OTHERS =>
@@ -153,40 +149,40 @@ BEGIN
                END CASE;
             WHEN "0011" => -- Octave 3
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0000001" =>
+                  WHEN "1000000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001011001"; -- Start of Octave 3, C3
-                  WHEN "0000011" =>
+                  WHEN "1100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001011111"; -- C#3/Db3
-                  WHEN "0000010" =>
+                  WHEN "0100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001100100"; -- D3
-                  WHEN "0000110" =>
+                  WHEN "0110000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001101010"; -- D#3/Eb3
-                  WHEN "0000100" =>
+                  WHEN "0010000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001110001"; -- E3
                   WHEN "0001000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001110111"; -- F3
-                  WHEN "0011000" =>
+                  WHEN "0001100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000001111110"; -- F#3/Gb3
-                  WHEN "0010000" =>
+                  WHEN "0000100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010000110"; -- G3
-                  WHEN "0110000" =>
+                  WHEN "0000110" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010001110"; -- G#3/Ab3
-                  WHEN "0100000" =>
+                  WHEN "0000010" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010010110"; -- A3
-                  WHEN "1100000" =>
+                  WHEN "0000011" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010011111"; -- A#3/Bb3
-                  WHEN "1000000" =>
+                  WHEN "0000001" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010101001"; -- B3
                   WHEN OTHERS =>
@@ -194,40 +190,40 @@ BEGIN
                END CASE;
             WHEN "0100" => -- Octave 4
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0000001" =>
+                  WHEN "1000000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010110011"; -- C4
-                  WHEN "0000011" =>
+                  WHEN "1100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000010111101"; -- C#4/Db4
-                  WHEN "0000010" =>
+                  WHEN "0100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000011001000"; -- D4
-                  WHEN "0000110" =>
+                  WHEN "0110000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000011010100"; -- D#4/Eb4
-                  WHEN "0000100" =>
+                  WHEN "0010000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000011100001"; -- E4
                   WHEN "0001000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000011101110"; -- F4
-                  WHEN "0011000" =>
+                  WHEN "0001100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000011111101"; -- F#4/Gb4
-                  WHEN "0010000" =>
+                  WHEN "0000100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000100001100"; -- G4
-                  WHEN "0110000" =>
+                  WHEN "0000110" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000100011100"; -- G#4/Ab4
-                  WHEN "0100000" =>
+                  WHEN "0000010" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000100101100"; -- A4
-                  WHEN "1100000" =>
+                  WHEN "0000011" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000100111110"; -- A#4/Bb4
-                  WHEN "1000000" =>
+                  WHEN "0000001" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000101010001"; -- B4
                   WHEN OTHERS =>
@@ -235,40 +231,40 @@ BEGIN
                END CASE;
             WHEN "0101" => -- Octave 5
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0000001" =>
+                  WHEN "1000000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000101100101"; -- C5
-                  WHEN "0000011" =>
+                  WHEN "1100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000101111010"; -- C#5/Db5
-                  WHEN "0000010" =>
+                  WHEN "0100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000110010001"; -- D5
-                  WHEN "0000110" =>
+                  WHEN "0110000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000110101001"; -- D#5/Eb5
-                  WHEN "0000100" =>
+                  WHEN "0010000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000111000010"; -- E5
                   WHEN "0001000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000111011101"; -- F5
-                  WHEN "0011000" =>
+                  WHEN "0001100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "000111111001"; -- F#5/Gb5
-                  WHEN "0010000" =>
+                  WHEN "0000100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001000010111"; -- G5
-                  WHEN "0110000" =>
+                  WHEN "0000110" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001000110111"; -- G#5/Ab5
-                  WHEN "0100000" =>
+                  WHEN "0000010" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001001011001"; -- A5
-                  WHEN "1100000" =>
+                  WHEN "0000011" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001001111100"; -- A#5/Bb5
-                  WHEN "1000000" =>
+                  WHEN "0000001" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001010100010"; -- B5
                   WHEN OTHERS =>
@@ -276,40 +272,40 @@ BEGIN
                END CASE;
             WHEN "0110" => -- Octave 6
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0000001" =>
+                  WHEN "1000000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001011001010"; -- C6
-                  WHEN "0000011" =>
+                  WHEN "1100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001011110101"; -- C#6/Db6
-                  WHEN "0000010" =>
+                  WHEN "0100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001100100010"; -- D6
-                  WHEN "0000110" =>
+                  WHEN "0110000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001101010010"; -- D#6/Eb6
-                  WHEN "0000100" =>
+                  WHEN "0010000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001110000100"; -- E6
                   WHEN "0001000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001110111010"; -- F6
-                  WHEN "0011000" =>
+                  WHEN "0001100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "001111110010"; -- F#6/Gb6
-                  WHEN "0010000" =>
+                  WHEN "0000100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010000101110"; -- G6
-                  WHEN "0110000" =>
+                  WHEN "0000110" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010001101110"; -- G#6/Ab6
-                  WHEN "0100000" =>
+                  WHEN "0000010" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010010110001"; -- A6
-                  WHEN "1100000" =>
+                  WHEN "0000011" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010011111001"; -- A#6/Bb6
-                  WHEN "1000000" =>
+                  WHEN "0000001" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010101000101"; -- B6
                   WHEN OTHERS =>
@@ -317,40 +313,40 @@ BEGIN
                END CASE;   
             WHEN "0111" => -- Octave 7
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0000001" =>
+                  WHEN "1000000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010110010101"; -- C7
-                  WHEN "0000011" =>
+                  WHEN "1100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "010111101010"; -- C#7/Db7
-                  WHEN "0000010" =>
+                  WHEN "0100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "011001000100"; -- D7
-                  WHEN "0000110" =>
+                  WHEN "0110000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "011010100011"; -- D#7/Eb7
-                  WHEN "0000100" =>
+                  WHEN "0010000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "011100001000"; -- E7
                   WHEN "0001000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "011101110011"; -- F7
-                  WHEN "0011000" =>
+                  WHEN "0001100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "011111100101"; -- F#7/Gb7
-                  WHEN "0010000" =>
+                  WHEN "0000100" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "100001011101"; -- G7
-                  WHEN "0110000" =>
+                  WHEN "0000110" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "100011011100"; -- G#7/Ab7
-                  WHEN "0100000" =>
+                  WHEN "0000010" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "100101100011"; -- A7
-                  WHEN "1100000" =>
+                  WHEN "0000011" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "100111110010"; -- A#7/Bb7
-                  WHEN "1000000" =>
+                  WHEN "0000001" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "101010001001"; -- B7
                   WHEN OTHERS =>
@@ -358,16 +354,16 @@ BEGIN
                END CASE;
             WHEN "1000" => -- Octave 8
                CASE CMD(6 DOWNTO 0) IS
-                  WHEN "0000001" =>
+                  WHEN "1000000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "101100101010"; -- C8
-                  WHEN "0000011" =>
+                  WHEN "1100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "101111010100"; -- C#8/Db8
-                  WHEN "0000010" =>
+                  WHEN "0100000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "110010001000"; -- D8
-                  WHEN "0000110" =>
+                  WHEN "0110000" =>
                      playing_current <= playingNote;
                      tuning_word_current <= "110101000110"; -- D#8/Eb8
                   WHEN OTHERS =>
@@ -377,6 +373,8 @@ BEGIN
             WHEN OTHERS =>
                playing_current <= notPlayingNote;
          END CASE;
+		END IF;
+		IF FALLING_EDGE(CS) THEN
 			IF CMD(15) = '1' THEN
 				playing_L <= playing_current;
 				playing_R <= playing_R;
@@ -388,6 +386,11 @@ BEGIN
 				tuning_word_R <= tuning_word_current;
 				tuning_word_L <= tuning_word_L;
 			END IF;
-      END IF;
+		ELSE
+			playing_L <= playing_L;
+			playing_R <= playing_R;
+			tuning_word_L <= tuning_word_L;
+			tuning_word_R <= tuning_word_R;
+		END IF;
    END PROCESS;
 END gen;
