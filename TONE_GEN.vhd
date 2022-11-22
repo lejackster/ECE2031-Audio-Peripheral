@@ -126,8 +126,8 @@ BEGIN
          tuning_word_L <= "000000000000";
 			tuning_word_R <= "000000000000";
       ELSIF RISING_EDGE(CS) THEN
-         CASE CMD(10 DOWNTO 7) IS
-            WHEN "0010" => -- Octave 2
+         CASE CMD(9 DOWNTO 7) IS
+            WHEN "001" => -- Octave 2
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "0000110" =>
                      playing_current <= playingNote;
@@ -144,7 +144,7 @@ BEGIN
                   WHEN OTHERS =>
                      playing_current <= notPlayingNote;
                END CASE;
-            WHEN "0011" => -- Octave 3
+            WHEN "010" => -- Octave 3
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "1000000" =>
                      playing_current <= playingNote;
@@ -185,7 +185,7 @@ BEGIN
                   WHEN OTHERS =>
                      playing_current <= notPlayingNote;
                END CASE;
-            WHEN "0100" => -- Octave 4
+            WHEN "011" => -- Octave 4
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "1000000" =>
                      playing_current <= playingNote;
@@ -226,7 +226,7 @@ BEGIN
                   WHEN OTHERS =>
                      playing_current <= notPlayingNote;
                END CASE;
-            WHEN "0101" => -- Octave 5
+            WHEN "100" => -- Octave 5
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "1000000" =>
                      playing_current <= playingNote;
@@ -267,7 +267,7 @@ BEGIN
                   WHEN OTHERS =>
                      playing_current <= notPlayingNote;
                END CASE;
-            WHEN "0110" => -- Octave 6
+            WHEN "101" => -- Octave 6
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "1000000" =>
                      playing_current <= playingNote;
@@ -308,7 +308,7 @@ BEGIN
                   WHEN OTHERS =>
                      playing_current <= notPlayingNote;
                END CASE;   
-            WHEN "0111" => -- Octave 7
+            WHEN "110" => -- Octave 7
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "1000000" =>
                      playing_current <= playingNote;
@@ -349,7 +349,7 @@ BEGIN
                   WHEN OTHERS =>
                      playing_current <= notPlayingNote;
                END CASE;
-            WHEN "1000" => -- Octave 8
+            WHEN "111" => -- Octave 8
                CASE CMD(6 DOWNTO 0) IS
                   WHEN "1000000" =>
                      playing_current <= playingNote;
