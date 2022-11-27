@@ -50,9 +50,9 @@ BEGIN
    GENERIC MAP (
       lpm_type => "altsyncram",
       width_a => 12,
-      widthad_a => 12,
-      numwords_a => 4096,
-      init_file => "SOUND_SINE_13_BIT_HALF.mif",
+      widthad_a => 11,
+      numwords_a => 2048,
+      init_file => "SOUND_SINE_13_BIT_QUARTER.mif",
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -63,13 +63,13 @@ BEGIN
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
-      address_a => phase_register_current(13 DOWNTO 2),
+      address_a => phase_register_current(12 DOWNTO 2),
       q_a => sounddata_current -- output is amplitude
    );
    
 	sounddata_signed <= signed(sounddata_current);
 	
-   -- 10-bit sound data is used as bits 12-3 of the 16-bit output.
+   -- 10-bit sound data is used as bits 12-13 of the 16-bit output.
    -- This is to prevent the output from being too loud.
    L_DATA(15 DOWNTO 13) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extend
    L_DATA(12 DOWNTO 1) <= sounddata_L;
@@ -87,27 +87,37 @@ BEGIN
 				LR_toggle <= '0';
 				
 				-- read right from ROM, load left into ROM
-				IF phase_register_current(14 DOWNTO 14) = "1" THEN
+				phase_register_current <= phase_register_L;
+				IF phase_register_current(14 DOWNTO 13) = "01" THEN
+					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
+					sounddata_R <= sounddata_current;
+				ELSIF phase_register_current(14 DOWNTO 13) = "10" THEN
+					sounddata_R <= std_logic_vector(0 - sounddata_signed);
+				ELSIF phase_register_current(14 DOWNTO 13) = "11" THEN
+					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
 					sounddata_R <= std_logic_vector(0 - sounddata_signed);
 				ELSE
-					sounddata_R <= std_logic_vector(sounddata_signed);
+					sounddata_R <= sounddata_current;
 				END IF;
 				sounddata_L <= sounddata_L;
-				
-				phase_register_current <= phase_register_L;
 				
 			ELSE
 				LR_toggle <= '1';
 				
 				-- read left from ROM, load right into ROM
-				IF phase_register_current(14 DOWNTO 14) = "1" THEN
+				phase_register_current <= phase_register_L;
+				IF phase_register_current(14 DOWNTO 13) = "01" THEN
+					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
+					sounddata_L <= sounddata_current;
+				ELSIF phase_register_current(14 DOWNTO 13) = "10" THEN
+					sounddata_L <= std_logic_vector(0 - sounddata_signed);
+				ELSIF phase_register_current(14 DOWNTO 13) = "11" THEN
+					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
 					sounddata_L <= std_logic_vector(0 - sounddata_signed);
 				ELSE
-					sounddata_L <= std_logic_vector(sounddata_signed);
+					sounddata_L <= sounddata_current;
 				END IF;
 				sounddata_R <= sounddata_R;
-				
-				phase_register_current <= phase_register_R;
 			END IF;
       END IF;
    END PROCESS;
@@ -119,6 +129,7 @@ BEGIN
 			phase_register_R <= "000000000000000";
       ELSIF RISING_EDGE(SAMPLE_CLK) THEN
          IF playing_L = playingNote THEN
+				
             phase_register_L <= phase_register_L + ("000" & tuning_word_L);
          ELSE
             phase_register_L <= "000000000000000";
