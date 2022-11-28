@@ -11,12 +11,6 @@ ORG 0
 	; Delay for .5 seconds between each note
 	
 	CALL	Delay
-	LOADI	2				; Set octave to 2
-	SHIFT	7
-	ADDI	Bit0			; C2
-	OUT		Output
-	
-	CALL	Delay
 	LOADI	2				
 	SHIFT	7
 	ADDI	Bit2			; E2
@@ -28,7 +22,7 @@ ORG 0
 	ADDI	Bit4			; G2
 	OUT		Output
 	
-	
+	CALL	Delay
 	LOADI	3				; Set octave to 3
 	SHIFT	7
 	ADDI	Bit0			; C3
@@ -46,7 +40,7 @@ ORG 0
 	ADDI	Bit4			; G3
 	OUT		Output
 	
-	
+	CALL	Delay
 	LOADI	4				; Set octave to 4
 	SHIFT	7
 	ADDI	Bit0			; C4
@@ -64,7 +58,7 @@ ORG 0
 	ADDI	Bit4			; G4
 	OUT		Output
 	
-	
+	CALL	Delay
 	LOADI	5				; Set octave to 5
 	SHIFT	7
 	ADDI	Bit0			; C5
@@ -82,7 +76,7 @@ ORG 0
 	ADDI	Bit4			; G5
 	OUT		Output
 	
-	
+	CALL	Delay
 	LOADI	6				; Set octave to 6
 	SHIFT	7
 	ADDI	Bit0			; C6
@@ -100,7 +94,7 @@ ORG 0
 	ADDI	Bit4			; G6
 	OUT		Output
 	
-	
+	CALL	Delay
 	LOADI	7				; Set octave to 7
 	SHIFT	7
 	ADDI	Bit0			; C7
@@ -118,7 +112,7 @@ ORG 0
 	ADDI	Bit4			; G7
 	OUT		Output
 	
-	
+	CALL	Delay
 	LOADI	8				; Set octave to 8
 	SHIFT	7
 	ADDI	Bit0			; C8
