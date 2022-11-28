@@ -97,10 +97,11 @@ BEGIN
 				tuning_word <= "000000000000";
 			   
 		Else
+								playing <= playingNote;
+						tuning_word <= "101010001001";
+
 				CASE CMD(9 DOWNTO 7) IS
 					WHEN "100" => -- 8
-						playing <= playingNote;
-						tuning_word <= "101010001001";
 						L_DATA(15 DOWNTO 4) <= sounddata(11 DOWNTO 0);
 						L_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
 						
@@ -109,8 +110,6 @@ BEGIN
 						R_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
 				
 					WHEN "010" => -- 4
-						playing <= playingNote;
-						tuning_word <= "101010001001";
 						L_DATA(15) <= sounddata(11); -- sign extend
 						L_DATA(14 DOWNTO 3) <= sounddata(11 DOWNTO 0);
 						L_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
@@ -121,8 +120,6 @@ BEGIN
 						R_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
 						
 					WHEN "001" => -- 2
-						playing <= playingNote;
-						tuning_word <= "101010001001";
 						L_DATA(15 DOWNTO 14) <= sounddata(11)&sounddata(11); -- sign extend
 						L_DATA(13 DOWNTO 2) <= sounddata(11 DOWNTO 0);
 						L_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
@@ -133,8 +130,6 @@ BEGIN
 						R_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
 						
 					WHEN "110" => -- -2
-						playing <= playingNote;
-						tuning_word <= "101010001001";
 						L_DATA(15 DOWNTO 12) <= sounddata(11)&sounddata(11)&sounddata(11)&sounddata(11); -- sign extend
 						L_DATA(11 DOWNTO 0) <= sounddata(11 DOWNTO 0);
 						
@@ -143,8 +138,7 @@ BEGIN
 						R_DATA(11 DOWNTO 0) <= sounddata(11 DOWNTO 0);
 						
 					WHEN "101" => -- -4
-						playing <= playingNote;
-						tuning_word <= "101010001001";
+					
 						L_DATA(15 DOWNTO 11) <= sounddata(10)&sounddata(10)&sounddata(10)&sounddata(10)&sounddata(10); -- sign extend
 						L_DATA(10 DOWNTO 0) <= sounddata(10 DOWNTO 0);
 						
@@ -153,8 +147,7 @@ BEGIN
 						R_DATA(10 DOWNTO 0) <= sounddata(10 DOWNTO 0);
 						
 					WHEN "011" => -- -8
-						tuning_word <= "101010001001";
-						playing <= playingNote;
+					
 						L_DATA(15 DOWNTO 10) <= sounddata(10)&sounddata(10)&sounddata(10)&sounddata(10)&sounddata(10)&sounddata(10); -- sign extend
 						L_DATA(9 DOWNTO 0) <= sounddata(10 DOWNTO 1);
 						
@@ -163,8 +156,7 @@ BEGIN
 						R_DATA(9 DOWNTO 0) <= sounddata(10 DOWNTO 1);
 						
 					WHEN OTHERS =>
-						playing <= playingNote;
-						tuning_word <= "101010001001";
+				
 						L_DATA(15 DOWNTO 13) <= sounddata(11)&sounddata(11)&sounddata(11); -- sign extend
 					L_DATA(12 DOWNTO 1) <= sounddata;
 					L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
