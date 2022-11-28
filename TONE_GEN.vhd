@@ -6,30 +6,39 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 LIBRARY ALTERA_MF;
 USE ALTERA_MF.ALTERA_MF_COMPONENTS.ALL;
 
-
-ENTITY TONE_GEN IS 
+ENTITY TONE_GEN_DEMO IS 
    PORT
    (
-      CMD        : IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
-      CS         : IN  STD_LOGIC;
-      SAMPLE_CLK : IN  STD_LOGIC;
-		ROM_CLK	  : IN  STD_LOGIC; -- Faster clock to switch channels in between samples
-      RESETN     : IN  STD_LOGIC;
-      L_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-      R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+      CMD       		: IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
+      CS         		: IN  STD_LOGIC;
+      SAMPLE_CLK 		: IN  STD_LOGIC;
+		ROM_CLK	  		: IN  STD_LOGIC; -- Faster clock to switch channels in between samples
+      RESETN     		: IN  STD_LOGIC;
+		WF_TOGGLE		: IN 	STD_LOGIC;
+      L_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+      R_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+		INDICATOR		: OUT STD_LOGIC
    );
-END TONE_GEN;
+END TONE_GEN_DEMO;
 
-ARCHITECTURE gen OF TONE_GEN IS 
-   
+ARCHITECTURE gen OF TONE_GEN_DEMO IS 
+	Type waveform is (
+		first,
+		second,
+		third,
+		fourth
+	);
+	
    Type playingStatus IS (
       playingNote,
       notPlayingNote
    );
-
-   SIGNAL phase_register_current	: STD_LOGIC_VECTOR(14 DOWNTO 0);
-	SIGNAL phase_register_L			: STD_LOGIC_VECTOR(14 DOWNTO 0);
-	SIGNAL phase_register_R			: STD_LOGIC_VECTOR(14 DOWNTO 0);
+	
+	SIGNAL waveform_current			: waveform;
+	
+   SIGNAL phase_register_current	: STD_LOGIC_VECTOR(16 DOWNTO 0);
+	SIGNAL phase_register_L			: STD_LOGIC_VECTOR(16 DOWNTO 0);
+	SIGNAL phase_register_R			: STD_LOGIC_VECTOR(16 DOWNTO 0);
    SIGNAL tuning_word_current 	: STD_LOGIC_VECTOR(11 DOWNTO 0);
 	SIGNAL tuning_word_L 			: STD_LOGIC_VECTOR(11 DOWNTO 0);
 	SIGNAL tuning_word_R 			: STD_LOGIC_VECTOR(11 DOWNTO 0);
@@ -41,17 +50,22 @@ ARCHITECTURE gen OF TONE_GEN IS
    SIGNAL playing_R        		: playingStatus;
 	SIGNAL LR_toggle					: STD_LOGIC;
    
+	-- Select section of ROM file
+	SIGNAL offset						: STD_LOGIC_VECTOR(16 DOWNTO 0);
+	CONSTANT SINE_OFFSET		 		: STD_LOGIC_VECTOR(16 DOWNTO 0) := "00000000000000000";
+	CONSTANT SQUARE_OFFSET   		: STD_LOGIC_VECTOR(16 DOWNTO 0) := "00111111111111100";
+	CONSTANT TRIANGLE_OFFSET 		: STD_LOGIC_VECTOR(16 DOWNTO 0) := "01111111111111000";
+	CONSTANT SAWTOOTH_OFFSET 		: STD_LOGIC_VECTOR(16 DOWNTO 0) := "10111111111010100";
    
 BEGIN
-
    -- ROM to hold the waveform
    SOUND_LUT : altsyncram
    GENERIC MAP (
+		init_file => "SOUND_WAVEFORM_13_BIT.mif",
       lpm_type => "altsyncram",
       width_a => 12,
-      widthad_a => 13,
-      numwords_a => 8192,
-      init_file => "SOUND_SINE_13_BIT.mif",
+      widthad_a => 15,
+      numwords_a => 32768,
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -59,10 +73,11 @@ BEGIN
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE"
    )
+	
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
-      address_a => phase_register_current(14 DOWNTO 2),
+      address_a => phase_register_current(16 DOWNTO 2),
       q_a => sounddata_current -- output is amplitude
    );
    
@@ -78,6 +93,26 @@ BEGIN
    R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
    
 	-- process to switch between multiple channels
+	
+	PROCESS(WF_TOGGLE) BEGIN
+		IF FALLING_EDGE(WF_TOGGLE) THEN
+			CASE waveform_current IS
+					WHEN first =>
+						waveform_current <= second;
+						offset <= SQUARE_OFFSET;
+					WHEN second =>
+						waveform_current <= third;
+						offset <= TRIANGLE_OFFSET;
+					WHEN third =>
+						waveform_current <= fourth;
+						offset <= SAWTOOTH_OFFSET;
+					WHEN fourth =>
+						waveform_current <= first;
+						offset <= SINE_OFFSET;
+				END CASE;	
+		END IF;
+	END PROCESS;
+	
 	PROCESS(ROM_CLK) BEGIN
       IF RISING_EDGE(ROM_CLK) THEN
 			IF LR_toggle = '1' THEN
@@ -87,7 +122,7 @@ BEGIN
 				sounddata_R <= sounddata_current;
 				sounddata_L <= sounddata_L;
 				
-				phase_register_current <= phase_register_L;
+				phase_register_current <= phase_register_L + offset;
 				
 			ELSE
 				LR_toggle <= '1';
@@ -96,26 +131,78 @@ BEGIN
 				sounddata_L <= sounddata_current;
 				sounddata_R <= sounddata_R;
 				
-				phase_register_current <= phase_register_R;
+				phase_register_current <= phase_register_R + offset;
 			END IF;
       END IF;
    END PROCESS;
 	
    -- process to perform DDS
    PROCESS(RESETN, SAMPLE_CLK) BEGIN
+		INDICATOR <= not(WF_TOGGLE)
+		
       IF RESETN = '0' THEN
-         phase_register_L <= "000000000000000";
-			phase_register_R <= "000000000000000";
+         phase_register_L <= "00000000000000000";
+			phase_register_R <= "00000000000000000";
       ELSIF RISING_EDGE(SAMPLE_CLK) THEN
          IF playing_L = playingNote THEN
-            phase_register_L <= phase_register_L + ("000" & tuning_word_L);
+				CASE waveform_current IS
+					WHEN first =>
+						IF (phase_register_L + ("00000" & tuning_word_L)) > "00111111111111011" THEN
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L) - "00111111111111100";
+						ELSE
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L);
+						END IF;
+					WHEN second =>
+						IF (phase_register_L + ("00000" & tuning_word_L)) > "01111111111110111" THEN
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L) - "00111111111111100";
+						ELSE
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L);
+						END IF;
+					WHEN third =>
+						IF (phase_register_L + ("00000" & tuning_word_L)) > "10111111111010011" THEN
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L) - "00111111111111100";
+						ELSE
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L);
+						END IF;
+					WHEN fourth =>
+						IF (phase_register_L + ("00000" & tuning_word_L)) < "10111111111010100" THEN
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L) - "00111111111111100";
+						ELSE
+							phase_register_L <= phase_register_L + ("00000" & tuning_word_L);
+						END IF;
+					END CASE;
          ELSE
-            phase_register_L <= "000000000000000";
+            phase_register_L <= "00000000000000000";
          END IF;
 			IF playing_R = playingNote THEN
-				phase_register_R <= phase_register_R + ("000" & tuning_word_R);
+				CASE waveform_current IS
+					WHEN first =>
+						IF (phase_register_R + ("00000" & tuning_word_L)) > "00111111111111011" THEN
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R) - "00111111111111100";
+						ELSE
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R);
+						END IF;
+					WHEN second =>
+						IF (phase_register_R + ("00000" & tuning_word_L)) > "01111111111110111" THEN
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R) - "00111111111111100";
+						ELSE
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R);
+						END IF;
+					WHEN third =>
+						IF (phase_register_R + ("00000" & tuning_word_L)) > "10111111111010011" THEN
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R) - "00111111111111100";
+						ELSE
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R);
+						END IF;
+					WHEN fourth =>
+						IF (phase_register_R + ("00000" & tuning_word_L)) < "10111111111010100" THEN
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R) - "00111111111111100";
+						ELSE
+							phase_register_R <= phase_register_R + ("00000" & tuning_word_R);
+						END IF;
+					END CASE;
          ELSE
-            phase_register_R <= "000000000000000";
+            phase_register_R <= "00000000000000000";
          END IF;
       END IF;
    END PROCESS;
