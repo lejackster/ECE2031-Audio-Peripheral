@@ -6,5 +6,8 @@
 !GenerateSineROM/src/*
 !SwitchSounds.asm
 !TONE_GEN.vhd
+!SCOMP_System.bdf
 !*.mif
+!*.asm
 BeepTest.mif
+BeepTest.asm
