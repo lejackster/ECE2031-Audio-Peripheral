@@ -57,7 +57,7 @@ BEGIN
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
       outdata_aclr_a => "NONE",
-      outdata_reg_a => "CLOCK0", -- used to be "UNREGISTERED"
+      outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE"
    )
    PORT MAP (
