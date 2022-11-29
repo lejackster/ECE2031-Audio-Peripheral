@@ -103,7 +103,7 @@ BEGIN
 		END IF;
 	END PROCESS;
 	
-	PROCESS(volume_current) BEGIN
+	PROCESS(volume_current, sounddata_L, sounddata_R) BEGIN
 	
 		CASE volume_current is
 			WHEN volumeUpThree => -- bit shift to scale by 8			
@@ -135,7 +135,7 @@ BEGIN
 				R_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
 			
 			WHEN default => -- default volume
-				L_DATA(15 DOWNTO 13) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(15 DOWNTO 13) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extend
 				L_DATA(12 DOWNTO 1) <= sounddata_L;
 				L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
 										
@@ -207,7 +207,7 @@ BEGIN
    END PROCESS;
 	
    -- process to perform DDS
-   PROCESS(RESETN, SAMPLE_CLK) BEGIN
+   PROCESS(RESETN, SAMPLE_CLK, WF_TOGGLE) BEGIN
 		INDICATOR <= not(WF_TOGGLE);
 		
       IF RESETN = '0' THEN
