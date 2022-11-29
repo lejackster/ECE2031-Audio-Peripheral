@@ -178,8 +178,8 @@ Loop:
 	STORE 	Octave
 	
 	IN		Switches		; Get toggle and shift 15 places
+	SHIFT	6
 	AND		Bit9
-	SHIFT	15
 	STORE	Channel
 	
 	LOAD	SwitchVar

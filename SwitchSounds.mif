@@ -150,8 +150,8 @@ CONTENT
            089 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
            08A : 10AF;  -- 	STORE 	Octave
            08B : 9000;  -- 	IN		Switches		; Get toggle and shift 15 places
-           08C : 48BB;  -- 	AND		Bit9
-           08D : 600F;  -- 	SHIFT	15
+           08C : 6006;  -- 	SHIFT	6
+           08D : 48BB;  -- 	AND		Bit9
            08E : 10B1;  -- 	STORE	Channel
            08F : 08B0;  -- 	LOAD	SwitchVar
            090 : 18AF;  -- 	ADD		Octave			; Append the octave
