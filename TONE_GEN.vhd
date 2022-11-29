@@ -483,7 +483,9 @@ BEGIN
 			END IF;
 		END IF;
    END PROCESS;
-	
+
+	-- incrementing volume preset with each button press
+	-- once highest volume preset is reached, start from lowest again
 	PROCESS(KEY2) BEGIN
 			IF FALLING_EDGE(KEY2) THEN
 				CASE volume_current IS
