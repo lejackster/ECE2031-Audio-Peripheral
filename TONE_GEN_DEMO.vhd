@@ -6,7 +6,7 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 LIBRARY ALTERA_MF;
 USE ALTERA_MF.ALTERA_MF_COMPONENTS.ALL;
 
-ENTITY TONE_GEN IS 
+ENTITY TONE_GEN_DEMO IS 
    PORT
    (
       CMD       		: IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -14,19 +14,21 @@ ENTITY TONE_GEN IS
       SAMPLE_CLK 		: IN  STD_LOGIC;
 		ROM_CLK	  		: IN  STD_LOGIC; -- Faster clock to switch channels in between samples
       RESETN     		: IN  STD_LOGIC;
+		WF_TOGGLE		: IN 	STD_LOGIC;
       L_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-      R_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+      R_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+		INDICATOR		: OUT STD_LOGIC
    );
-END TONE_GEN;
+END TONE_GEN_DEMO;
 
-ARCHITECTURE gen OF TONE_GEN IS 
-   
+ARCHITECTURE gen OF TONE_GEN_DEMO IS 
+	
    Type playingStatus IS (
       playingNote,
       notPlayingNote
    );
-
-   SIGNAL phase_register_current	: STD_LOGIC_VECTOR(14 DOWNTO 0);
+	
+   SIGNAL phase_register_current	: STD_LOGIC_VECTOR(16 DOWNTO 0);
 	SIGNAL phase_register_L			: STD_LOGIC_VECTOR(14 DOWNTO 0);
 	SIGNAL phase_register_R			: STD_LOGIC_VECTOR(14 DOWNTO 0);
    SIGNAL tuning_word_current 	: STD_LOGIC_VECTOR(11 DOWNTO 0);
@@ -40,12 +42,7 @@ ARCHITECTURE gen OF TONE_GEN IS
    SIGNAL playing_R        		: playingStatus;
 	SIGNAL LR_toggle					: STD_LOGIC;
    
-	-- Select section of ROM file
-	SIGNAL offset						: STD_LOGIC_VECTOR(14 DOWNTO 0);
-	CONSTANT SINE_OFFSET		 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "000000000000000";
-	CONSTANT SQUARE_OFFSET   		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "001111111111111";
-	CONSTANT TRIANGLE_OFFSET 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "011111111111110";
-	CONSTANT SAWTOOTH_OFFSET 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "101111111110101";
+	SIGNAL offset						: STD_LOGIC_VECTOR(1 DOWNTO 0);
    
 BEGIN
    -- ROM to hold the waveform
@@ -54,8 +51,8 @@ BEGIN
 		init_file => "SOUND_WAVEFORM_13_BIT.mif",
       lpm_type => "altsyncram",
       width_a => 12,
-      widthad_a => 13,
-      numwords_a => 8192,
+      widthad_a => 15,
+      numwords_a => 32768,
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -67,7 +64,7 @@ BEGIN
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
-      address_a => phase_register_current(14 DOWNTO 2),
+      address_a => phase_register_current(16 DOWNTO 2),
       q_a => sounddata_current -- output is amplitude
    );
    
@@ -83,18 +80,17 @@ BEGIN
    R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
    
 	-- process to switch between multiple channels
+	
+	PROCESS(WF_TOGGLE, RESETN) BEGIN
+		IF FALLING_EDGE(WF_TOGGLE) THEN
+			offset <= offset +"01";
+		END IF;
+		IF RESETN = '0' THEN
+			offset <= "00";
+		END IF;
+	END PROCESS;
+	
 	PROCESS(ROM_CLK) BEGIN
-		CASE CMD(14 DOWNTO 13) IS
-         WHEN "00" =>
-				offset <= SINE_OFFSET;
-			WHEN "01" =>
-				offset <= SQUARE_OFFSET;
-			WHEN "10" =>
-				offset <= TRIANGLE_OFFSET;
-			WHEN "11" =>
-				offset <= SAWTOOTH_OFFSET;
-		END CASE;
-		
       IF RISING_EDGE(ROM_CLK) THEN
 			IF LR_toggle = '1' THEN
 				LR_toggle <= '0';
@@ -103,7 +99,7 @@ BEGIN
 				sounddata_R <= sounddata_current;
 				sounddata_L <= sounddata_L;
 				
-				phase_register_current <= phase_register_L + offset;
+				phase_register_current <= offset & phase_register_L;
 				
 			ELSE
 				LR_toggle <= '1';
@@ -112,25 +108,27 @@ BEGIN
 				sounddata_L <= sounddata_current;
 				sounddata_R <= sounddata_R;
 				
-				phase_register_current <= phase_register_R + offset;
+				phase_register_current <= offset & phase_register_R;
 			END IF;
       END IF;
    END PROCESS;
 	
    -- process to perform DDS
    PROCESS(RESETN, SAMPLE_CLK) BEGIN
+		INDICATOR <= not(WF_TOGGLE);
+		
       IF RESETN = '0' THEN
          phase_register_L <= "000000000000000";
 			phase_register_R <= "000000000000000";
       ELSIF RISING_EDGE(SAMPLE_CLK) THEN
          IF playing_L = playingNote THEN
-            phase_register_L <= phase_register_L + ("000" & tuning_word_L);
+				phase_register_L <= phase_register_L + ("000" & tuning_word_L);
          ELSE
             phase_register_L <= "000000000000000";
          END IF;
-			IF playing_R = playingNote THEN
+			IF playing_R = playingNote THEN	
 				phase_register_R <= phase_register_R + ("000" & tuning_word_R);
-         ELSE
+			ELSE
             phase_register_R <= "000000000000000";
          END IF;
       END IF;
