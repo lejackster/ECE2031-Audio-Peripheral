@@ -1,0 +1,11 @@
+=-- Altera Memory Initialization File (MIF)
+DEPTH = 2;
+WIDTH = 12;
+ADDRESS_RADIX = DEC;
+DATA_RADIX = DEC;
+
+CONTENT
+BEGIN
+0 : 5;
+1 : 5;
+END;

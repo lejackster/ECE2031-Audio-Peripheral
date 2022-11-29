@@ -6,17 +6,16 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 LIBRARY ALTERA_MF;
 USE ALTERA_MF.ALTERA_MF_COMPONENTS.ALL;
 
-
 ENTITY TONE_GEN IS 
    PORT
    (
-      CMD        : IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
-      CS         : IN  STD_LOGIC;
-      SAMPLE_CLK : IN  STD_LOGIC;
-		ROM_CLK	  : IN  STD_LOGIC; -- Faster clock to switch channels in between samples
-      RESETN     : IN  STD_LOGIC;
-      L_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-      R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+      CMD       		: IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
+      CS         		: IN  STD_LOGIC;
+      SAMPLE_CLK 		: IN  STD_LOGIC;
+		ROM_CLK	  		: IN  STD_LOGIC; -- Faster clock to switch channels in between samples
+      RESETN     		: IN  STD_LOGIC;
+      L_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+      R_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
    );
 END TONE_GEN;
 
@@ -41,17 +40,22 @@ ARCHITECTURE gen OF TONE_GEN IS
    SIGNAL playing_R        		: playingStatus;
 	SIGNAL LR_toggle					: STD_LOGIC;
    
+	-- Select section of ROM file
+	SIGNAL offset						: STD_LOGIC_VECTOR(14 DOWNTO 0);
+	CONSTANT SINE_OFFSET		 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "000000000000000";
+	CONSTANT SQUARE_OFFSET   		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "001111111111111";
+	CONSTANT TRIANGLE_OFFSET 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "011111111111110";
+	CONSTANT SAWTOOTH_OFFSET 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "101111111110101";
    
 BEGIN
-
    -- ROM to hold the waveform
    SOUND_LUT : altsyncram
    GENERIC MAP (
+		init_file => "SOUND_WAVEFORM_13_BIT.mif",
       lpm_type => "altsyncram",
       width_a => 12,
       widthad_a => 13,
       numwords_a => 8192,
-      init_file => "SOUND_SINE_13_BIT.mif",
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -59,6 +63,7 @@ BEGIN
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE"
    )
+	
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
@@ -79,6 +84,17 @@ BEGIN
    
 	-- process to switch between multiple channels
 	PROCESS(ROM_CLK) BEGIN
+		CASE CMD(14 DOWNTO 13) IS
+         WHEN "00" =>
+				offset <= SINE_OFFSET;
+			WHEN "01" =>
+				offset <= SQUARE_OFFSET;
+			WHEN "10" =>
+				offset <= TRIANGLE_OFFSET;
+			WHEN "11" =>
+				offset <= SAWTOOTH_OFFSET;
+		END CASE;
+		
       IF RISING_EDGE(ROM_CLK) THEN
 			IF LR_toggle = '1' THEN
 				LR_toggle <= '0';
@@ -87,7 +103,7 @@ BEGIN
 				sounddata_R <= sounddata_current;
 				sounddata_L <= sounddata_L;
 				
-				phase_register_current <= phase_register_L;
+				phase_register_current <= phase_register_L + offset;
 				
 			ELSE
 				LR_toggle <= '1';
@@ -96,7 +112,7 @@ BEGIN
 				sounddata_L <= sounddata_current;
 				sounddata_R <= sounddata_R;
 				
-				phase_register_current <= phase_register_R;
+				phase_register_current <= phase_register_R + offset;
 			END IF;
       END IF;
    END PROCESS;

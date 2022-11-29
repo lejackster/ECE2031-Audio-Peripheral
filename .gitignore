@@ -1,13 +1,3 @@
-*
-!SOF - File on FPGA/
-!SOF - File on FPGA/*
-!GenerateSineROM/
-!GenerateSineROM/src/
-!GenerateSineROM/src/*
-!SwitchSounds.asm
-!TONE_GEN.vhd
-!SCOMP_System.bdf
-!*.mif
-!*.asm
-BeepTest.mif
-BeepTest.asm
+db/*
+incremental_db/*
+output_files/*
