@@ -1,6 +1,5 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
--- USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
@@ -50,9 +49,9 @@ BEGIN
    GENERIC MAP (
       lpm_type => "altsyncram",
       width_a => 12,
-      widthad_a => 11,
-      numwords_a => 2048,
-      init_file => "SOUND_SINE_13_BIT_QUARTER.mif",
+      widthad_a => 12,
+      numwords_a => 4096,
+      init_file => "SOUND_SINE_13_BIT_HALF.mif",
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -63,7 +62,7 @@ BEGIN
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
-      address_a => phase_register_current(12 DOWNTO 2),
+      address_a => phase_register_current(13 DOWNTO 2),
       q_a => sounddata_current -- output is amplitude
    );
    
@@ -87,37 +86,28 @@ BEGIN
 				LR_toggle <= '0';
 				
 				-- read right from ROM, load left into ROM
-				phase_register_current <= phase_register_L;
-				IF phase_register_current(14 DOWNTO 13) = "01" THEN
-					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
-					sounddata_R <= sounddata_current;
-				ELSIF phase_register_current(14 DOWNTO 13) = "10" THEN
-					sounddata_R <= std_logic_vector(0 - sounddata_signed);
-				ELSIF phase_register_current(14 DOWNTO 13) = "11" THEN
-					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
+				IF phase_register_current(14 DOWNTO 14) = "1" THEN
 					sounddata_R <= std_logic_vector(0 - sounddata_signed);
 				ELSE
 					sounddata_R <= sounddata_current;
 				END IF;
 				sounddata_L <= sounddata_L;
 				
+				phase_register_current <= phase_register_L;
+				
 			ELSE
 				LR_toggle <= '1';
 				
 				-- read left from ROM, load right into ROM
-				phase_register_current <= phase_register_L;
-				IF phase_register_current(14 DOWNTO 13) = "01" THEN
-					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
-					sounddata_L <= sounddata_current;
-				ELSIF phase_register_current(14 DOWNTO 13) = "10" THEN
-					sounddata_L <= std_logic_vector(0 - sounddata_signed);
-				ELSIF phase_register_current(14 DOWNTO 13) = "11" THEN
-					phase_register_current(12 DOWNTO 2) <= 2048 - phase_register_current(12 DOWNTO 2);
+				IF phase_register_current(14 DOWNTO 1) = "1" THEN
 					sounddata_L <= std_logic_vector(0 - sounddata_signed);
 				ELSE
 					sounddata_L <= sounddata_current;
 				END IF;
 				sounddata_R <= sounddata_R;
+				
+				phase_register_current <= phase_register_R;
+				
 			END IF;
       END IF;
    END PROCESS;
