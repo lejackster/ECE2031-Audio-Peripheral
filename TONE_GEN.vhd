@@ -18,7 +18,6 @@ ENTITY TONE_GEN IS
 		KEY2       : IN    STD_LOGIC;
       L_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
       R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-
    );
 END TONE_GEN;
 
@@ -96,7 +95,7 @@ BEGIN
 		
 			CASE scale_factor is
 							
-				WHEN 8 =>
+				WHEN 8 => -- bit shift to scale by 8
 						L_DATA(15 DOWNTO 4) <= sounddata_current(11 DOWNTO 0);
 						L_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
 						
@@ -104,7 +103,7 @@ BEGIN
 						R_DATA(15 DOWNTO 4) <= sounddata_current(11 DOWNTO 0);
 						R_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
 					
-				WHEN 4 =>
+				WHEN 4 => -- bit shift to scale by 4
 						L_DATA(15) <= sounddata_current(11); -- sign extend
 						L_DATA(14 DOWNTO 3) <= sounddata_current(11 DOWNTO 0);
 						L_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
@@ -114,7 +113,7 @@ BEGIN
 						R_DATA(14 DOWNTO 3) <= sounddata_current(11 DOWNTO 0);
 						R_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
 						
-				WHEN 2 =>
+				WHEN 2 => -- bit shift to scale by 2
 						L_DATA(15 DOWNTO 14) <= sounddata_current(11)&sounddata_current(11); -- sign extend
 						L_DATA(13 DOWNTO 2) <= sounddata_current(11 DOWNTO 0);
 						L_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
@@ -124,7 +123,7 @@ BEGIN
 						R_DATA(13 DOWNTO 2) <= sounddata_current(11 DOWNTO 0);
 						R_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
 						
-				WHEN 1 =>
+				WHEN 1 => -- default volume
 						L_DATA(15 DOWNTO 13) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						L_DATA(12 DOWNTO 1) <= sounddata_current;
 						L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
@@ -134,7 +133,7 @@ BEGIN
 						R_DATA(12 DOWNTO 1) <= sounddata_current;
 						R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
 				
-				WHEN -2 =>
+				WHEN -2 => -- bit shift to scale by 1/2
 						L_DATA(15 DOWNTO 12) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						L_DATA(11 DOWNTO 0) <= sounddata_current(11 DOWNTO 0);
 						
@@ -142,7 +141,7 @@ BEGIN
 						R_DATA(15 DOWNTO 12) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						R_DATA(11 DOWNTO 0) <= sounddata_current(11 DOWNTO 0);
 		     
-				WHEN -4 =>
+				WHEN -4 => -- bit shift to scale by 1/4
 				L_DATA(15 DOWNTO 11) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						L_DATA(10 DOWNTO 0) <= sounddata_current(11 DOWNTO 1);
 						
@@ -150,7 +149,7 @@ BEGIN
 						R_DATA(15 DOWNTO 11) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						R_DATA(10 DOWNTO 0) <= sounddata_current(11 DOWNTO 1);
 		     
-			  WHEN -8 =>
+			  WHEN -8 => -- bit shift to scale by 1/8
 						L_DATA(15 DOWNTO 10) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						L_DATA(9 DOWNTO 0) <= sounddata_current(11 DOWNTO 2);
 						
@@ -158,7 +157,7 @@ BEGIN
 						R_DATA(15 DOWNTO 10) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 						R_DATA(9 DOWNTO 0) <= sounddata_current(11 DOWNTO 2);
 			  
-				WHEN OTHERS =>
+				WHEN OTHERS => -- default volume
 					L_DATA(15 DOWNTO 13) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
 					L_DATA(12 DOWNTO 1) <= sounddata_current;
 					L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
@@ -480,33 +479,35 @@ BEGIN
 		
 		-- assigning scale factor values based on current volume state
 			CASE (volume_current) IS
-						WHEN volumeUpThree => -- Octave 2
+						WHEN volumeUpThree => -- highest volume preset (x8)
 							scale_factor :=8;
 							
-						WHEN volumeUpTwo => -- Octave 2
+						WHEN volumeUpTwo => -- volume preset for scaling by factor of 4
 							scale_factor :=4;
 							
-						WHEN volumeUpOne => -- Octave 2
+						WHEN volumeUpOne => -- volume preset for scaling by factor of 2
 							scale_factor :=2;
 							
-						WHEN default =>
-							scale_factor :=1;	
+						WHEN default => -- default volume preset
+							scale_factor :=1;
 							
-						WHEN volumeDownOne => -- Octave 2
+						WHEN volumeDownOne => -- volume preset for scaling by factor of 1/2
 							scale_factor :=-2;
-						
-						WHEN volumeDownTwo => -- Octave 2
+							
+						WHEN volumeDownTwo => -- volume preset for scaling by factor of 1/4
 							scale_factor :=-4;
 							
-						WHEN volumeDownThree => -- Octave 2
+						WHEN volumeDownThree => -- volume preset for scaling by factor of 1/8
 							scale_factor :=-8;
 							
-						WHEN OTHERS =>
-							scale_factor :=1;						
+						WHEN OTHERS => -- default volume preset
+							scale_factor :=1;
 			END case;
    END PROCESS;
 	
 	-- volume control logic based on volume button
+	-- increases volume each time button is pressed. When highest preset reached, goes back
+	-- down to lowest preset
 		PROCESS(KEY2) BEGIN
 			IF FALLING_EDGE(KEY2) THEN
 				CASE volume_current IS
