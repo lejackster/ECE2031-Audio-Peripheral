@@ -9,7 +9,6 @@ DATA_RADIX = HEX;
 CONTENT
   BEGIN
     [000..7FF] : 0000;  -- Default to NOP
-
            000 : 80BF;  -- 	CALL	Delay
            001 : B802;  -- 	LOADI	2				
            002 : 6007;  -- 	SHIFT	7
