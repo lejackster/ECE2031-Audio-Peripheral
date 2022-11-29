@@ -177,12 +177,14 @@ Loop:
 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
 	STORE 	Octave
 	
-	IN		Switches		; Get toggle and shift 15 places
-	SHIFT	6
+	LOAD	SwitchVar		; Get toggle and shift 15 places
 	AND		Bit9
+	SHIFT	6
+	AND		Bit15
 	STORE	Channel
 	
 	LOAD	SwitchVar
+	AND		Bit6_0
 	ADD		Octave			; Append the octave
 	ADD		Channel			; Append the channel toggle		
 	OUT 	Output			; Out the bit vector to peripheral
