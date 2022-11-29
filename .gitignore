@@ -7,5 +7,6 @@
 !SwitchSounds.asm
 !TONE_GEN.vhd
 !SCOMP_System.bdf
+!tone_gen_demo.vhd
 !*.mif
 BeepTest.mif
