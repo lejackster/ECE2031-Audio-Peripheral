@@ -6,18 +6,17 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 LIBRARY ALTERA_MF;
 USE ALTERA_MF.ALTERA_MF_COMPONENTS.ALL;
 
-
 ENTITY TONE_GEN IS 
    PORT
    (
-      CMD        : IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
-      CS         : IN  STD_LOGIC;
-      SAMPLE_CLK : IN  STD_LOGIC;
-		ROM_CLK	  : IN  STD_LOGIC; -- Faster clock to switch channels in between samples
-      RESETN     : IN  STD_LOGIC;
-		KEY2       : IN    STD_LOGIC;
-      L_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-      R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+      CMD       		: IN  STD_LOGIC_VECTOR(15 DOWNTO 0);
+      CS         		: IN  STD_LOGIC;
+      SAMPLE_CLK 		: IN  STD_LOGIC;
+		ROM_CLK	  		: IN  STD_LOGIC; -- Faster clock to switch channels in between samples
+      RESETN     		: IN  STD_LOGIC;
+		KEY2       		: IN    STD_LOGIC;
+      L_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+      R_DATA     		: OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
    );
 END TONE_GEN;
 
@@ -51,19 +50,23 @@ ARCHITECTURE gen OF TONE_GEN IS
    SIGNAL playing_L        		: playingStatus;
    SIGNAL playing_R        		: playingStatus;
 	SIGNAL LR_toggle					: STD_LOGIC;
-   SHARED VARIABLE scale_factor : INTEGER :=1;
    SIGNAL volume_current			: volume;
+	-- Select section of ROM file
+	SIGNAL offset						: STD_LOGIC_VECTOR(14 DOWNTO 0);
+	CONSTANT SINE_OFFSET		 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "000000000000000";
+	CONSTANT SQUARE_OFFSET   		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "001111111111111";
+	CONSTANT TRIANGLE_OFFSET 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "011111111111110";
+	CONSTANT SAWTOOTH_OFFSET 		: STD_LOGIC_VECTOR(14 DOWNTO 0) := "101111111110101";
    
 BEGIN
-
    -- ROM to hold the waveform
    SOUND_LUT : altsyncram
    GENERIC MAP (
+		init_file => "SOUND_SINE_13_BIT.mif",
       lpm_type => "altsyncram",
       width_a => 12,
       widthad_a => 13,
       numwords_a => 8192,
-      init_file => "SOUND_SINE_13_BIT.mif",
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -71,6 +74,7 @@ BEGIN
       outdata_reg_a => "UNREGISTERED",
       power_up_uninitialized => "FALSE"
    )
+	
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
@@ -80,108 +84,100 @@ BEGIN
    
    -- 10-bit sound data is used as bits 12-3 of the 16-bit output.
    -- This is to prevent the output from being too loud.
-	-- process to scale sound wave amplitude based on scale factor (adjusted according to volume state)
 	
 	PROCESS(volume_current) BEGIN
-
+	
 		CASE volume_current is
-								
-					WHEN volumeUpThree => -- bit shift to scale by 8
-							L_DATA(15 DOWNTO 4) <= sounddata_current;
-							L_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
-							
-							-- Right channel is the same.
-							R_DATA(15 DOWNTO 4) <= sounddata_current;
-							R_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
-					WHEN volumeUpTwo => -- bit shift to scale by 4
-							L_DATA(15) <= sounddata_current(11); -- sign extend
-							L_DATA(14 DOWNTO 3) <= sounddata_current;
-							L_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
-							
-							-- Right channel is the same.
-							R_DATA(15) <= sounddata_current(11); -- sign extend
-							R_DATA(14 DOWNTO 3) <= sounddata_current;
-							R_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
-							
-					WHEN volumeUpOne => -- bit shift to scale by 2
-							L_DATA(15 DOWNTO 14) <= sounddata_current(11)&sounddata_current(11); -- sign extend
-							L_DATA(13 DOWNTO 2) <= sounddata_current;
-							L_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
-							
-							-- Right channel is the same.
-							R_DATA(15 DOWNTO 14) <= sounddata_current(11)&sounddata_current(11); -- sign extend
-							R_DATA(13 DOWNTO 2) <= sounddata_current;
-							R_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
-							
-					WHEN default => -- default volume
-							L_DATA(15 DOWNTO 13) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							L_DATA(12 DOWNTO 1) <= sounddata_current;
-							L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
-							
-							-- Right channel is the same.
-							R_DATA(15 DOWNTO 13) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							R_DATA(12 DOWNTO 1) <= sounddata_current;
-							R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
-					
-					WHEN volumeDownOne => -- bit shift to scale by 1/2
-							L_DATA(15 DOWNTO 12) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							L_DATA(11 DOWNTO 0) <= sounddata_current;
-							
-							-- Right channel is the same.
-							R_DATA(15 DOWNTO 12) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							R_DATA(11 DOWNTO 0) <= sounddata_current;
-				  
-					WHEN volumeDownTwo => -- bit shift to scale by 1/4
-							L_DATA(15 DOWNTO 11) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							L_DATA(10 DOWNTO 0) <= sounddata_current(11 DOWNTO 1);
-							
-							-- Right channel is the same.
-							R_DATA(15 DOWNTO 11) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							R_DATA(10 DOWNTO 0) <= sounddata_current(11 DOWNTO 1);
-				  
-				  WHEN volumeDownThree => -- bit shift to scale by 1/8
-							L_DATA(15 DOWNTO 10) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							L_DATA(9 DOWNTO 0) <= sounddata_current(11 DOWNTO 2);
-							
-							-- Right channel is the same.
-							R_DATA(15 DOWNTO 10) <= sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11)&sounddata_current(11); -- sign extend
-							R_DATA(9 DOWNTO 0) <= sounddata_current(11 DOWNTO 2);
-						
-					END CASE;
-					
-					-- assigning scale factor values based on current volume state
-				CASE (volume_current) IS
-						WHEN volumeUpThree => -- highest volume preset (x8)
-							scale_factor :=8;
-							
-						WHEN volumeUpTwo => -- volume preset for scaling by factor of 4
-							scale_factor :=4;
-							
-						WHEN volumeUpOne => -- volume preset for scaling by factor of 2
-							scale_factor :=2;
-							
-						WHEN default => -- default volume preset
-							scale_factor :=1;
-							
-						WHEN volumeDownOne => -- volume preset for scaling by factor of 1/2
-							scale_factor :=-2;
-							
-						WHEN volumeDownTwo => -- volume preset for scaling by factor of 1/4
-							scale_factor :=-4;
-							
-						WHEN volumeDownThree => -- volume preset for scaling by factor of 1/8
-							scale_factor :=-8;
-							
-						WHEN OTHERS => -- default volume preset
-							scale_factor :=1;
-			END case;
-				
-   END PROCESS;
-
+			WHEN volumeUpThree => -- bit shift to scale by 8			
+				L_DATA(15 DOWNTO 4) <= sounddata_L;
+				L_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 4) <= sounddata_R;
+				R_DATA(3 DOWNTO 0) <= "0000"; -- pad right side with 0s
+			
+			WHEN volumeUpTwo => -- bit shift to scale by 4
+				L_DATA(15) <= sounddata_L(11); -- sign extendf
+				L_DATA(14 DOWNTO 3) <= sounddata_L;
+				L_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
+										
+				-- Right channel is the same.
+				R_DATA(15) <= sounddata_R(11); -- sign extend
+				R_DATA(14 DOWNTO 3) <= sounddata_R;
+				R_DATA(2 DOWNTO 0) <= "000"; -- pad right side with 0s
+			
+			WHEN volumeUpOne => -- bit shift to scale by 2
+				L_DATA(15 DOWNTO 14) <= sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(13 DOWNTO 2) <= sounddata_L;
+				L_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 14) <= sounddata_R(11)&sounddata_R(11); -- sign extend
+				R_DATA(13 DOWNTO 2) <= sounddata_R;
+				R_DATA(1 DOWNTO 0) <= "00"; -- pad right side with 0s
+			
+			WHEN default => -- default volume
+				L_DATA(15 DOWNTO 13) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(12 DOWNTO 1) <= sounddata_L;
+				L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 13) <= sounddata_R(11)&sounddata_R(11)&sounddata_R(11); -- sign extend
+				R_DATA(12 DOWNTO 1) <= sounddata_R;
+				R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
+			
+			WHEN volumeDownOne => -- bit shift to scale by 1/2
+				L_DATA(15 DOWNTO 12) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(11 DOWNTO 0) <= sounddata_L;
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 12) <= sounddata_R(11)&sounddata_R(11)&sounddata_R(11)&sounddata_R(11); -- sign extend
+				R_DATA(11 DOWNTO 0) <= sounddata_R;
+			
+			WHEN volumeDownTwo => -- bit shift to scale by 1/4
+				L_DATA(15 DOWNTO 11) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(10 DOWNTO 0) <= sounddata_L(11 DOWNTO 1);
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 11) <= sounddata_R(11)&sounddata_R(11)&sounddata_R(11)&sounddata_R(11)&sounddata_R(11); -- sign extend
+				R_DATA(10 DOWNTO 0) <= sounddata_R(11 DOWNTO 1);
+			
+			WHEN volumeDownThree => -- bit shift to scale by 1/8
+				L_DATA(15 DOWNTO 10) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11)&sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(9 DOWNTO 0) <= sounddata_L(11 DOWNTO 2);
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 10) <= sounddata_R(11)&sounddata_R(11)&sounddata_R(11)&sounddata_R(11)&sounddata_R(11)&sounddata_R(11); -- sign extend
+				R_DATA(9 DOWNTO 0) <= sounddata_R (11 DOWNTO 2);
+			
+			WHEN others =>
+				L_DATA(15 DOWNTO 13) <= sounddata_L(11)&sounddata_L(11)&sounddata_L(11); -- sign extendf
+				L_DATA(12 DOWNTO 1) <= sounddata_L;
+				L_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
+										
+				-- Right channel is the same.
+				R_DATA(15 DOWNTO 13) <= sounddata_R(11)&sounddata_R(11)&sounddata_R(11); -- sign extend
+				R_DATA(12 DOWNTO 1) <= sounddata_R;
+				R_DATA(0 DOWNTO 0) <= "0"; -- pad right side with 0s
+			
+		END case;
 		
+			
+	END PROCESS;
    
 	-- process to switch between multiple channels
 	PROCESS(ROM_CLK) BEGIN
+		CASE CMD(14 DOWNTO 13) IS
+         WHEN "00" =>
+				offset <= SINE_OFFSET;
+			WHEN "01" =>
+				offset <= SQUARE_OFFSET;
+			WHEN "10" =>
+				offset <= TRIANGLE_OFFSET;
+			WHEN "11" =>
+				offset <= SAWTOOTH_OFFSET;
+		END CASE;
+		
       IF RISING_EDGE(ROM_CLK) THEN
 			IF LR_toggle = '1' THEN
 				LR_toggle <= '0';
@@ -190,7 +186,7 @@ BEGIN
 				sounddata_R <= sounddata_current;
 				sounddata_L <= sounddata_L;
 				
-				phase_register_current <= phase_register_L;
+				phase_register_current <= phase_register_L + offset;
 				
 			ELSE
 				LR_toggle <= '1';
@@ -199,11 +195,9 @@ BEGIN
 				sounddata_L <= sounddata_current;
 				sounddata_R <= sounddata_R;
 				
-				phase_register_current <= phase_register_R;
+				phase_register_current <= phase_register_R + offset;
 			END IF;
       END IF;
-		
-		
    END PROCESS;
 	
    -- process to perform DDS
@@ -223,9 +217,6 @@ BEGIN
             phase_register_R <= "000000000000000";
          END IF;
       END IF;
-		
-		
-		
    END PROCESS;
 
    -- process to latch command data from SCOMP
@@ -491,14 +482,9 @@ BEGIN
 				tuning_word_L <= tuning_word_L;
 			END IF;
 		END IF;
-		
-		
    END PROCESS;
 	
-	-- volume control logic based on volume button
-	-- increases volume each time button is pressed. When highest preset reached, goes back
-	-- down to lowest preset
-		PROCESS(KEY2) BEGIN
+	PROCESS(KEY2) BEGIN
 			IF FALLING_EDGE(KEY2) THEN
 				CASE volume_current IS
 					WHEN volumeUpThree =>
@@ -519,6 +505,6 @@ BEGIN
 						volume_current <= default;
 				END CASE;
 			END IF;
-		END PROCESS;
-					
+	END PROCESS;
+	
 END gen;
