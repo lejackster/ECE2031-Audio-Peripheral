@@ -15,9 +15,9 @@ ENTITY TONE_GEN IS
       SAMPLE_CLK : IN  STD_LOGIC;
 		ROM_CLK	  : IN  STD_LOGIC; -- Faster clock to switch channels in between samples
       RESETN     : IN  STD_LOGIC;
+		KEY2       : IN    STD_LOGIC;
       L_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-      R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-		KEY2       : IN    STD_LOGIC
+      R_DATA     : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
 
    );
 END TONE_GEN;
@@ -508,24 +508,26 @@ BEGIN
 	
 	-- volume control logic based on volume button
 		PROCESS(KEY2) BEGIN
-		IF FALLING_EDGE(KEY2) THEN
-			CASE volume_current IS
-				WHEN volumeUpThree =>
-					volume_current <= volumeDownThree;
-				WHEN volumeUpTwo =>
-					volume_current <= volumeUpThree;
-				WHEN volumeUpOne =>
-					volume_current <= volumeUpTwo;
-				WHEN default =>
-					volume_current <= volumeUpOne;
-				WHEN volumeDownOne =>
-					volume_current <= default;
-				WHEN volumeDownTwo =>
-					volume_current <= volumeDownOne;
-				WHEN volumeDownThree =>
-					volume_current <= volumeDownTwo;
-			END CASE;
-      END IF;
+			IF FALLING_EDGE(KEY2) THEN
+				CASE volume_current IS
+					WHEN volumeUpThree =>
+						volume_current <= volumeDownThree;
+					WHEN volumeUpTwo =>
+						volume_current <= volumeUpThree;
+					WHEN volumeUpOne =>
+						volume_current <= volumeUpTwo;
+					WHEN default =>
+						volume_current <= volumeUpOne;
+					WHEN volumeDownOne =>
+						volume_current <= default;
+					WHEN volumeDownTwo =>
+						volume_current <= volumeDownOne;
+					WHEN volumeDownThree =>
+						volume_current <= volumeDownTwo;
+					WHEN others =>
+						volume_current <= default;
+				END CASE;
+			END IF;
 		END PROCESS;
 					
 END gen;
