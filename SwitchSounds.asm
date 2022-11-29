@@ -7,32 +7,8 @@
 ORG 0
 
 	; Demo arpeggio 
-	; C2-E2-G2-C3-E3-G3-C4-E4-G4-C5-E5-G5-C6-E6-G6-C7-E7-G7-C8-E8-G8
+	; C3-E3-G3-C4-E4-G4-C5-E5-G5-C6-E6-G6-C7-E7-G7-C8-E8-G8
 	; Delay for .5 seconds between each note
-	
-	CALL	Delay
-	LOADI	2				
-	SHIFT	7
-	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
-	ADD		Bit2			; C2
-	OUT		Output
-	OUT		Hex0
-	
-	CALL	Delay
-	LOADI	2				
-	SHIFT	7
-	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
-	ADD		Bit2			; E2
-	OUT		Output
-	OUT		Hex0
-	
-	CALL	Delay
-	LOADI	2				
-	SHIFT	7
-	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
-	ADD		Bit4			; G2
-	OUT		Output
-	OUT		Hex0
 	
 	CALL	Delay
 	LOADI	3				; Set octave to 3
@@ -284,4 +260,3 @@ Timer:     EQU 002
 Hex0:      EQU 004
 Hex1:      EQU 005
 Output:	   EQU &H40
-;add buttons
