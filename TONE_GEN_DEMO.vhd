@@ -1,7 +1,8 @@
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
-USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
+USE IEEE.NUMERIC_STD.ALL;
+
 
 LIBRARY ALTERA_MF;
 USE ALTERA_MF.ALTERA_MF_COMPONENTS.ALL;
@@ -43,16 +44,18 @@ ARCHITECTURE gen OF TONE_GEN_DEMO IS
 	SIGNAL LR_toggle					: STD_LOGIC;
    
 	SIGNAL offset						: STD_LOGIC_VECTOR(1 DOWNTO 0);
+	
+	SIGNAL sounddata_signed       : SIGNED(11 DOWNTO 0);
    
 BEGIN
    -- ROM to hold the waveform
    SOUND_LUT : altsyncram
    GENERIC MAP (
-		init_file => "SOUND_WAVEFORM_13_BIT.mif",
+		init_file => "SOUND_REDUCED_WAVEFORM_12_BIT.mif",
       lpm_type => "altsyncram",
       width_a => 12,
-      widthad_a => 15,
-      numwords_a => 32768,
+      widthad_a => 14,
+      numwords_a => 16384,
       intended_device_family => "Cyclone II",
       lpm_hint => "ENABLE_RUNTIME_MOD=NO",
       operation_mode => "ROM",
@@ -64,9 +67,11 @@ BEGIN
    PORT MAP (
       clock0 => NOT(ROM_CLK),
       -- In this design, 2 bits of the phase register are fractional bits
-      address_a => phase_register_current(16 DOWNTO 2),
+      address_a => phase_register_current(15 DOWNTO 2),
       q_a => sounddata_current -- output is amplitude
    );
+	
+	sounddata_signed <= signed(sounddata_current);
    
    -- 10-bit sound data is used as bits 12-3 of the 16-bit output.
    -- This is to prevent the output from being too loud.
@@ -81,6 +86,7 @@ BEGIN
    
 	-- process to switch between multiple channels
 	
+	-- offset <= CMD(14 DOWNTO 13);
 	PROCESS(WF_TOGGLE, RESETN) BEGIN
 		IF FALLING_EDGE(WF_TOGGLE) THEN
 			offset <= offset +"01";
@@ -90,25 +96,38 @@ BEGIN
 		END IF;
 	END PROCESS;
 	
+	
 	PROCESS(ROM_CLK) BEGIN
       IF RISING_EDGE(ROM_CLK) THEN
 			IF LR_toggle = '1' THEN
 				LR_toggle <= '0';
 				
 				-- read right from ROM, load left into ROM
-				sounddata_R <= sounddata_current;
+				
+				IF phase_register_current(16 DOWNTO 16) = "1" THEN
+					sounddata_R <= std_logic_vector(0 - sounddata_signed);
+				ELSE
+					sounddata_R <= sounddata_current;
+				END IF;
 				sounddata_L <= sounddata_L;
 				
-				phase_register_current <= offset & phase_register_L;
+				phase_register_current <= phase_register_L (14 DOWNTO 14) & offset & phase_register_L(13 DOWNTO 0);
+				
 				
 			ELSE
 				LR_toggle <= '1';
 				
 				-- read left from ROM, load right into ROM
-				sounddata_L <= sounddata_current;
+				
+				IF phase_register_current(16 DOWNTO 16) = "1" THEN
+					sounddata_L <= std_logic_vector(0 - sounddata_signed);
+				ELSE
+					sounddata_L <= sounddata_current;
+				END IF;
 				sounddata_R <= sounddata_R;
 				
-				phase_register_current <= offset & phase_register_R;
+				phase_register_current <= phase_register_R (14 DOWNTO 14) & offset & phase_register_R(13 DOWNTO 0);
+				
 			END IF;
       END IF;
    END PROCESS;
