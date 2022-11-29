@@ -19,8 +19,8 @@ ORG 0
 	CALL	Delay_Triplet
 	; C4 and E3 triplet
 	LOADI	0
-	OUT		Output
-	
+	OUT		Output			; Reset R channel
+
 	LOADI	1				; L channel
 	SHIFT	15
 	AND		Bit15
@@ -40,6 +40,8 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; E4 and G3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
 	LOADI	4				; 4		
 	SHIFT	7			
 	AND		Bit9_7			
@@ -55,6 +57,8 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; G4 and E3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
@@ -70,6 +74,8 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; C5 and G3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
@@ -85,6 +91,8 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; E5 and C4 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
@@ -100,6 +108,8 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; G5 and E4 quarter
+	LOADI	0
+	OUT		Output			; Reset R channel
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
@@ -115,6 +125,8 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay
 	; E5 and C4 quarter
+	LOADI	0
+	OUT		Output			; Reset R channel
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
@@ -130,10 +142,12 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay
 	; Ab3 triplet
-	LOADI	5				; 5
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	3				; 5
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		Bit4			; E
+	ADD		&B0000000110	; Ab
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
@@ -222,14 +236,14 @@ Delay:
 	OUT		Timer
 WaitingLoop:
 	IN		Timer
-	ADDI	-3
+	ADDI	-6
 	JNEG	WaitingLoop
 	
 Delay_Triplet:
 	OUT		Timer
 WaitingLoop_Triplet:
 	IN		Timer
-	ADDI	-1
+	ADDI	-2
 	JNEG	WaitingLoop_Triplet
 	RETURN
 
