@@ -10,68 +10,197 @@ CONTENT
   BEGIN
     [000..7FF] : 0000;  -- Default to NOP
 
-           000 : 2801;  -- 	JUMP	Loop
-           001 : 9000;  -- 	IN 		Switches		; Take in switch bits
-           002 : 1030;  -- 	STORE	SwitchVar
-           003 : 4839;  -- 	AND		Bit7			; Check if SW7 is up for octave up
-           004 : 381A;  -- 	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
-           005 : 0830;  -- 	LOAD	SwitchVar
-           006 : 483A;  -- 	AND		Bit8			; Check if SW8 if up for octave down
-           007 : 381E;  -- 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
-           008 : 082F;  -- 	LOAD	Octave			
-           009 : 6007;  -- 	SHIFT	7				; Shift octave 7 places
-           00A : 483D;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
-           00B : 102F;  -- 	STORE 	Octave
-           00C : 9000;  -- 	IN		Switches		; Get toggle and shift 15 places
-           00D : 483B;  -- 	AND		Bit9
-           00E : 600F;  -- 	SHIFT	15
-           00F : 1031;  -- 	STORE	Channel
-           010 : 0830;  -- 	LOAD	SwitchVar
-           011 : 182F;  -- 	ADD		Octave			; Append the octave
-           012 : 1831;  -- 	ADD		Channel			; Append the channel toggle		
-           013 : 9840;  -- 	OUT 	Output			; Out the bit vector to SCOMP
-           014 : 082F;  -- 	LOAD	Octave
-           015 : 6017;  -- 	SHIFT	-7
-           016 : 102F;  -- 	STORE 	Octave
-           017 : 082F;  -- 	LOAD	Octave
-           018 : 9804;  -- 	OUT		Hex0			; Out the current octave to SCOMP
-           019 : 2801;  -- 	JUMP	Loop
-           01A : 9000;  -- 	IN		Switches
-           01B : 4839;  -- 	AND		Bit7
-           01C : 4022;  -- 	JZERO	OctaveUp
-           01D : 281A;  -- 	JUMP	OctaveUpWait
-           01E : 9000;  -- 	IN		Switches
-           01F : 483A;  -- 	AND		Bit8
-           020 : 4026;  -- 	JZERO	OctaveDown
-           021 : 281E;  -- 	JUMP	OctaveDownWait
-           022 : 082F;  -- 	LOAD	Octave
-           023 : 6801;  -- 	ADDI	1
-           024 : 102F;  -- 	STORE	Octave
-           025 : 2801;  -- 	JUMP	Loop
-           026 : 082F;  -- 	LOAD	Octave
-           027 : 6FFF;  -- 	ADDI	-1
-           028 : 102F;  -- 	STORE	Octave
-           029 : 2801;  -- 	JUMP	Loop
-           02A : 9802;  -- 	OUT		Timer
-           02B : 9002;  -- 	IN		Timer
-           02C : 6FFD;  -- 	ADDI	-3
-           02D : 302B;  -- 	JNEG	WaitingLoop
-           02E : 8800;  -- 	RETURN
-           02F : 0004;  -- Octave:		DW 4
-           030 : 0000;  -- SwitchVar:	DW 0
-           031 : 0000;  -- Channel:	DW 0
-           032 : 0001;  -- Bit0:		DW &B0000000001
-           033 : 0002;  -- Bit1:		DW &B0000000010
-           034 : 0004;  -- Bit2:		DW &B0000000100
-           035 : 0008;  -- Bit3:		DW &B0000001000
-           036 : 0010;  -- Bit4:		DW &B0000010000
-           037 : 0020;  -- Bit5:		DW &B0000100000
-           038 : 0040;  -- Bit6:		DW &B0001000000
-           039 : 0080;  -- Bit7:		DW &B0010000000
-           03A : 0100;  -- Bit8:		DW &B0100000000
-           03B : 0200;  -- Bit9:		DW &B1000000000
-           03C : 007F;  -- Bit6_0: 	DW &B0001111111
-           03D : 0380;  -- Bit9_7:		DW &B1110000000
-           03E : 8000;  -- Bit15:		DW &B1000000000000000
-           03F : FFFF;  -- Bit15_0:	DW &B1111111111111111
+           000 : 80AA;  -- 	CALL	Delay
+           001 : B803;  -- 	LOADI	3				; Set octave to 3
+           002 : 6007;  -- 	SHIFT	7
+           003 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           004 : 18B2;  -- 	ADD		Bit0			; C3
+           005 : 9840;  -- 	OUT		Output
+           006 : 9804;  -- 	OUT		Hex0
+           007 : 80AA;  -- 	CALL	Delay
+           008 : B803;  -- 	LOADI	3				
+           009 : 6007;  -- 	SHIFT	7
+           00A : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           00B : 18B4;  -- 	ADD		Bit2			; E3
+           00C : 9840;  -- 	OUT		Output
+           00D : 9804;  -- 	OUT		Hex0
+           00E : 80AA;  -- 	CALL	Delay
+           00F : B803;  -- 	LOADI	3				
+           010 : 6007;  -- 	SHIFT	7
+           011 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           012 : 18B6;  -- 	ADD		Bit4			; G3
+           013 : 9840;  -- 	OUT		Output
+           014 : 9804;  -- 	OUT		Hex0
+           015 : 80AA;  -- 	CALL	Delay
+           016 : B804;  -- 	LOADI	4				; Set octave to 4
+           017 : 6007;  -- 	SHIFT	7
+           018 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           019 : 18B2;  -- 	ADD		Bit0			; C4
+           01A : 9840;  -- 	OUT		Output
+           01B : 9804;  -- 	OUT		Hex0
+           01C : 80AA;  -- 	CALL	Delay
+           01D : B804;  -- 	LOADI	4				
+           01E : 6007;  -- 	SHIFT	7
+           01F : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           020 : 18B4;  -- 	ADD		Bit2			; E4
+           021 : 9840;  -- 	OUT		Output
+           022 : 9804;  -- 	OUT		Hex0
+           023 : 80AA;  -- 	CALL	Delay
+           024 : B804;  -- 	LOADI	4				
+           025 : 6007;  -- 	SHIFT	7
+           026 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           027 : 18B6;  -- 	ADD		Bit4			; G4
+           028 : 9840;  -- 	OUT		Output
+           029 : 9804;  -- 	OUT		Hex0
+           02A : 80AA;  -- 	CALL	Delay
+           02B : B805;  -- 	LOADI	5				; Set octave to 5
+           02C : 6007;  -- 	SHIFT	7
+           02D : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           02E : 18B2;  -- 	ADD		Bit0			; C5
+           02F : 9840;  -- 	OUT		Output
+           030 : 9804;  -- 	OUT		Hex0
+           031 : 80AA;  -- 	CALL	Delay
+           032 : B805;  -- 	LOADI	5				
+           033 : 6007;  -- 	SHIFT	7
+           034 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           035 : 18B4;  -- 	ADD		Bit2			; E5
+           036 : 9840;  -- 	OUT		Output
+           037 : 9804;  -- 	OUT		Hex0
+           038 : 80AA;  -- 	CALL	Delay
+           039 : B805;  -- 	LOADI	5				
+           03A : 6007;  -- 	SHIFT	7
+           03B : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           03C : 18B6;  -- 	ADD		Bit4			; G5
+           03D : 9840;  -- 	OUT		Output
+           03E : 9804;  -- 	OUT		Hex0
+           03F : 80AA;  -- 	CALL	Delay
+           040 : B806;  -- 	LOADI	6				; Set octave to 6
+           041 : 6007;  -- 	SHIFT	7
+           042 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           043 : 18B2;  -- 	ADD		Bit0			; C6
+           044 : 9840;  -- 	OUT		Output
+           045 : 9804;  -- 	OUT		Hex0
+           046 : 80AA;  -- 	CALL	Delay
+           047 : B806;  -- 	LOADI	6				
+           048 : 6007;  -- 	SHIFT	7
+           049 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           04A : 18B4;  -- 	ADD		Bit2			; E6
+           04B : 9840;  -- 	OUT		Output
+           04C : 9804;  -- 	OUT		Hex0
+           04D : 80AA;  -- 	CALL	Delay
+           04E : B806;  -- 	LOADI	6				
+           04F : 6007;  -- 	SHIFT	7
+           050 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           051 : 18B6;  -- 	ADD		Bit4			; G6
+           052 : 9840;  -- 	OUT		Output
+           053 : 9804;  -- 	OUT		Hex0
+           054 : 80AA;  -- 	CALL	Delay
+           055 : B807;  -- 	LOADI	7				; Set octave to 7
+           056 : 6007;  -- 	SHIFT	7
+           057 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           058 : 18B2;  -- 	ADD		Bit0			; C7
+           059 : 9840;  -- 	OUT		Output
+           05A : 9804;  -- 	OUT		Hex0
+           05B : 80AA;  -- 	CALL	Delay
+           05C : B807;  -- 	LOADI	7				
+           05D : 6007;  -- 	SHIFT	7
+           05E : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           05F : 68B4;  -- 	ADDI	Bit2			; E7
+           060 : 9840;  -- 	OUT		Output
+           061 : 9804;  -- 	OUT		Hex0
+           062 : 80AA;  -- 	CALL	Delay
+           063 : B807;  -- 	LOADI	7				
+           064 : 6007;  -- 	SHIFT	7
+           065 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           066 : 18B6;  -- 	ADD		Bit4			; G7
+           067 : 9840;  -- 	OUT		Output
+           068 : 9804;  -- 	OUT		Hex0
+           069 : 80AA;  -- 	CALL	Delay
+           06A : B808;  -- 	LOADI	8				; Set octave to 8
+           06B : 6007;  -- 	SHIFT	7
+           06C : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           06D : 18B2;  -- 	ADD		Bit0			; C8
+           06E : 9840;  -- 	OUT		Output
+           06F : 9804;  -- 	OUT		Hex0
+           070 : 80AA;  -- 	CALL	Delay
+           071 : B808;  -- 	LOADI	8				
+           072 : 6007;  -- 	SHIFT	7
+           073 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           074 : 18B4;  -- 	ADD		Bit2			; E8
+           075 : 9840;  -- 	OUT		Output
+           076 : 9804;  -- 	OUT		Hex0
+           077 : 80AA;  -- 	CALL	Delay
+           078 : B808;  -- 	LOADI	8				; 8			
+           079 : 6007;  -- 	SHIFT	7			
+           07A : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           07B : 18B6;  -- 	ADD		Bit4			; G
+           07C : 9840;  -- 	OUT		Output
+           07D : 9804;  -- 	OUT		Hex0
+           07E : 80AA;  -- 	CALL	Delay
+           07F : 2880;  -- 	JUMP	Loop
+           080 : 9000;  -- 	IN 		Switches		; Take in switch bits
+           081 : 10B0;  -- 	STORE	SwitchVar
+           082 : 48B9;  -- 	AND		Bit7			; Check if SW7 is up for octave up
+           083 : 389A;  -- 	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
+           084 : 08B0;  -- 	LOAD	SwitchVar
+           085 : 48BA;  -- 	AND		Bit8			; Check if SW8 if up for octave down
+           086 : 389E;  -- 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
+           087 : 08AF;  -- 	LOAD	Octave			
+           088 : 6007;  -- 	SHIFT	7				; Shift octave 7 places
+           089 : 48BD;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           08A : 10AF;  -- 	STORE 	Octave
+           08B : 9000;  -- 	IN		Switches		; Get toggle and shift 15 places
+           08C : 48BB;  -- 	AND		Bit9
+           08D : 600F;  -- 	SHIFT	15
+           08E : 10B1;  -- 	STORE	Channel
+           08F : 08B0;  -- 	LOAD	SwitchVar
+           090 : 18AF;  -- 	ADD		Octave			; Append the octave
+           091 : 18B1;  -- 	ADD		Channel			; Append the channel toggle		
+           092 : 9840;  -- 	OUT 	Output			; Out the bit vector to peripheral
+           093 : 08AF;  -- 	LOAD	Octave
+           094 : 6017;  -- 	SHIFT	-7
+           095 : 10AF;  -- 	STORE 	Octave
+           096 : 08AF;  -- 	LOAD	Octave
+           097 : 6801;  -- 	ADDI	1
+           098 : 9804;  -- 	OUT		Hex0			; Out the current octave to peripheral
+           099 : 2880;  -- 	JUMP	Loop
+           09A : 9000;  -- 	IN		Switches
+           09B : 48B9;  -- 	AND		Bit7
+           09C : 40A2;  -- 	JZERO	OctaveUp
+           09D : 289A;  -- 	JUMP	OctaveUpWait
+           09E : 9000;  -- 	IN		Switches
+           09F : 48BA;  -- 	AND		Bit8
+           0A0 : 40A6;  -- 	JZERO	OctaveDown
+           0A1 : 289E;  -- 	JUMP	OctaveDownWait
+           0A2 : 08AF;  -- 	LOAD	Octave
+           0A3 : 6801;  -- 	ADDI	1
+           0A4 : 10AF;  -- 	STORE	Octave
+           0A5 : 2880;  -- 	JUMP	Loop
+           0A6 : 08AF;  -- 	LOAD	Octave
+           0A7 : 6FFF;  -- 	ADDI	-1
+           0A8 : 10AF;  -- 	STORE	Octave
+           0A9 : 2880;  -- 	JUMP	Loop
+           0AA : 9802;  -- 	OUT		Timer
+           0AB : 9002;  -- 	IN		Timer
+           0AC : 6FFB;  -- 	ADDI	-5
+           0AD : 30AB;  -- 	JNEG	WaitingLoop
+           0AE : 8800;  -- 	RETURN
+           0AF : 0003;  -- Octave:		DW 3
+           0B0 : 0000;  -- SwitchVar:	DW 0
+           0B1 : 0000;  -- Channel:	DW 0
+           0B2 : 0001;  -- Bit0:		DW &B0000000001
+           0B3 : 0002;  -- Bit1:		DW &B0000000010
+           0B4 : 0004;  -- Bit2:		DW &B0000000100
+           0B5 : 0008;  -- Bit3:		DW &B0000001000
+           0B6 : 0010;  -- Bit4:		DW &B0000010000
+           0B7 : 0020;  -- Bit5:		DW &B0000100000
+           0B8 : 0040;  -- Bit6:		DW &B0001000000
+           0B9 : 0080;  -- Bit7:		DW &B0010000000
+           0BA : 0100;  -- Bit8:		DW &B0100000000
+           0BB : 0200;  -- Bit9:		DW &B1000000000
+           0BC : 007F;  -- Bit6_0: 	DW &B0001111111
+           0BD : 0380;  -- Bit9_7:		DW &B1110000000
+           0BE : 8000;  -- Bit15:		DW &B1000000000000000
+           0BF : 0000;  -- Bit15_na:	DW &B0000000000000000
+           0C0 : FFFF;  -- Bit15_0:	DW &B1111111111111111
   END;

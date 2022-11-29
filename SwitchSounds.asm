@@ -6,6 +6,156 @@
 
 ORG 0
 
+	; Demo arpeggio 
+	; C3-E3-G3-C4-E4-G4-C5-E5-G5-C6-E6-G6-C7-E7-G7-C8-E8-G8
+	; Delay for .5 seconds between each note
+	
+	CALL	Delay
+	LOADI	3				; Set octave to 3
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit0			; C3
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	3				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit2			; E3
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	3				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit4			; G3
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	4				; Set octave to 4
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit0			; C4
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	4				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit2			; E4
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	4				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit4			; G4
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	5				; Set octave to 5
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit0			; C5
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	5				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit2			; E5
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	5				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit4			; G5
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	6				; Set octave to 6
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit0			; C6
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	6				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit2			; E6
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	6				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit4			; G6
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	7				; Set octave to 7
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit0			; C7
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	7				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADDI	Bit2			; E7
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	7				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit4			; G7
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	8				; Set octave to 8
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit0			; C8
+	OUT		Output
+	OUT		Hex0
+	
+	CALL	Delay
+	LOADI	8				
+	SHIFT	7
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit2			; E8
+	OUT		Output
+	OUT		Hex0
+
+	CALL	Delay
+	LOADI	8				; 8			
+	SHIFT	7			
+	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+	ADD		Bit4			; G
+	OUT		Output
+	OUT		Hex0
+	CALL	Delay
+	
+	
 	JUMP	Loop
 	
 Loop:
@@ -35,14 +185,15 @@ Loop:
 	LOAD	SwitchVar
 	ADD		Octave			; Append the octave
 	ADD		Channel			; Append the channel toggle		
-	OUT 	Output			; Out the bit vector to SCOMP
+	OUT 	Output			; Out the bit vector to peripheral
 	
 	LOAD	Octave
 	SHIFT	-7
 	STORE 	Octave
 	
 	LOAD	Octave
-	OUT		Hex0			; Out the current octave to SCOMP
+	ADDI	1
+	OUT		Hex0			; Out the current octave to peripheral
 	
 	JUMP	Loop
 	
@@ -76,12 +227,12 @@ Delay:
 	OUT		Timer
 WaitingLoop:
 	IN		Timer
-	ADDI	-3
+	ADDI	-5
 	JNEG	WaitingLoop
 	RETURN
 
 ;	Variables
-Octave:		DW 4
+Octave:		DW 3
 SwitchVar:	DW 0
 Channel:	DW 0
 
@@ -99,6 +250,7 @@ Bit9:		DW &B1000000000
 Bit6_0: 	DW &B0001111111
 Bit9_7:		DW &B1110000000
 Bit15:		DW &B1000000000000000
+Bit15_na:	DW &B0000000000000000
 Bit15_0:	DW &B1111111111111111
 
 ;	IO address constants
@@ -108,4 +260,3 @@ Timer:     EQU 002
 Hex0:      EQU 004
 Hex1:      EQU 005
 Output:	   EQU &H40
-;add buttons
