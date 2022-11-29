@@ -155,6 +155,7 @@ ORG 0
 	OUT		Hex0
 	CALL	Delay
 	
+	
 	JUMP	Loop
 	
 Loop:
@@ -184,7 +185,7 @@ Loop:
 	LOAD	SwitchVar
 	ADD		Octave			; Append the octave
 	ADD		Channel			; Append the channel toggle		
-	OUT 	Output			; Out the bit vector to SCOMP
+	OUT 	Output			; Out the bit vector to peripheral
 	
 	LOAD	Octave
 	SHIFT	-7
@@ -226,7 +227,7 @@ Delay:
 	OUT		Timer
 WaitingLoop:
 	IN		Timer
-	ADDI	-3
+	ADDI	-5
 	JNEG	WaitingLoop
 	RETURN
 
