@@ -6,45 +6,6 @@
 
 ORG 0
 
-	; TESTING
-	LOADI	4				; 4
-	SHIFT	7			
-	AND		Bit9_7			
-	ADD		Bit2			; G
-	OUT		Output			; R channel
-	CALL	Delay
-	CALL	Delay
-	CALL	Delay
-	
-	LOADI	4				; 4
-	SHIFT	7			
-	AND		Bit9_7			
-	ADD		Bit2			; G
-	ADD		Bit13
-	OUT		Output			; R channel
-	CALL	Delay
-	CALL	Delay
-	CALL	Delay
-	
-	LOADI	4				; 4
-	SHIFT	7			
-	AND		Bit9_7			
-	ADD		Bit2			; G
-	ADD		Bit14
-	OUT		Output			; R channel
-	CALL	Delay
-	CALL	Delay
-	CALL	Delay
-	
-	LOADI	4				; 4	
-	SHIFT	7			
-	AND		Bit9_7			
-	ADD		Bit2			; G
-	ADD		Bit14_15
-	OUT		Output			; R channel
-	CALL	Delay
-	CALL	Delay
-	CALL	Delay
 	; Sine wave
 	
 	; Measure 1
