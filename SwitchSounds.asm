@@ -260,17 +260,207 @@ ORG 0
 	OUT		Output			; R channel
 	CALL	Delay
 	
-	;Measure 3
+	; Square
+	
+	; Measure 3
+	; Bb3 triplet
 	LOADI	0
 	OUT		Output			; Reset R channel
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		Ab				; Ab
+	ADD		Bb				; Bb
 	OUT		Hex0
 	ADD		Channel			; L channel
+	ADD		Bit13			; Square
 	OUT		Output
 	CALL	Delay_Triplet
+	; D4 and D3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; F4 and Bb3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit3			; F
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Bb4 and D3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; D5 and Bb3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; F5 and D4 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit3			; F
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Bb5 and F4 quarter
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit3			; F
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay
+	; Bb5 and D4 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Bb5 and D4 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Bb5 and D4 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bb				; Bb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit5			; D
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	
+	; Measure 4
+	; C6 and C4 whole
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	6				; 6
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit6			; C
+	OUT		Hex0
+	ADD		Channel			; L channel
+	ADD		Bit13			; Square
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit6			; C
+	ADD		Bit13			; Square
+	OUT		Output			; R channel
+	CALL	Delay
+	CALL	Delay
+	CALL	Delay
+	CALL	Delay
+	
 	
 	LOADI	0				; Reset sound
 	OUT		Output
@@ -388,6 +578,9 @@ Bit8:		DW &B0100000000
 Bit9:		DW &B1000000000
 Bit6_0: 	DW &B0001111111
 Bit9_7:		DW &B1110000000
+Bit13:		DW &B10000000000000
+Bit14:		DW &B100000000000000
+Bit14_15:	DW &B110000000000000
 Bit15:		DW &B1000000000000000
 Bit15_0:	DW &B1111111111111111
 
