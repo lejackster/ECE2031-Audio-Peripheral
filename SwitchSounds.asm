@@ -160,7 +160,7 @@ ORG 0
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000110000	; Eb
+	ADD		Eb				; Eb
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; Eb4 and Ab3 triplet
@@ -169,14 +169,14 @@ ORG 0
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000110000	; Eb
+	ADD		Eb				; Eb
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000000110	; Ab
+	ADD		Ab				; Ab
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; Ab4 and Eb3 triplet
@@ -185,14 +185,14 @@ ORG 0
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000000110	; Ab
+	ADD		Ab				; Ab
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000110000	; Eb
+	ADD		Eb				; Eb
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; C5 and Ab3 triplet
@@ -208,7 +208,7 @@ ORG 0
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000000110	; Ab
+	ADD		Ab				; Ab
 	OUT		Output			; R channel
 	CALL	Delay_Triplet
 	; Eb5 and C4 triplet
@@ -217,7 +217,7 @@ ORG 0
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000110000	; Eb
+	ADD		Eb				; Eb
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
@@ -233,14 +233,14 @@ ORG 0
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000000110	; Ab
+	ADD		Ab				; Ab
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000110000	; Eb
+	ADD		Eb				; Eb
 	OUT		Output			; R channel
 	CALL	Delay
 	; Eb5 and C4 quarter
@@ -249,7 +249,7 @@ ORG 0
 	LOADI	5				; 5
 	SHIFT	7			
 	AND		Bit9_7			
-	ADD		&B0000110000	; Eb
+	ADD		Eb				; Eb
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
@@ -259,6 +259,18 @@ ORG 0
 	ADD		Bit6			; C
 	OUT		Output			; R channel
 	CALL	Delay
+	
+	;Measure 3
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Ab				; Ab
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	CALL	Delay_Triplet
 	
 	LOADI	0				; Reset sound
 	OUT		Output
@@ -360,6 +372,10 @@ SwitchVar:	DW 0
 Channel:	DW 0
 
 ;	Useful values
+Eb:			DW &B0000110000
+Ab:			DW &B0000000110
+Bb:			DW &B0000000011
+
 Bit0:		DW &B0000000001
 Bit1:		DW &B0000000010
 Bit2:		DW &B0000000100

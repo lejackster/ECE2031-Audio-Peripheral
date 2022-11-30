@@ -12,310 +12,323 @@ CONTENT
 
            000 : B803;  -- 	LOADI	3				; 3	
            001 : 6007;  -- 	SHIFT	7			
-           002 : 4931;  -- 	AND		Bit9_7			
-           003 : 1928;  -- 	ADD		Bit2			; G
+           002 : 493E;  -- 	AND		Bit9_7			
+           003 : 1935;  -- 	ADD		Bit2			; G
            004 : 9840;  -- 	OUT		Output			; R channel
            005 : 9804;  -- 	OUT		Hex0
-           006 : 811E;  -- 	CALL	Delay_Triplet
+           006 : 8128;  -- 	CALL	Delay_Triplet
            007 : B800;  -- 	LOADI	0
            008 : 9840;  -- 	OUT		Output			; Reset R channel
            009 : B801;  -- 	LOADI	1				; L channel
            00A : 600F;  -- 	SHIFT	15
-           00B : 4932;  -- 	AND		Bit15
-           00C : 1125;  -- 	STORE	Channel
+           00B : 493F;  -- 	AND		Bit15
+           00C : 112F;  -- 	STORE	Channel
            00D : B804;  -- 	LOADI	4				; 4		
            00E : 6007;  -- 	SHIFT	7			
-           00F : 4931;  -- 	AND		Bit9_7			
-           010 : 192C;  -- 	ADD		Bit6			; C
+           00F : 493E;  -- 	AND		Bit9_7			
+           010 : 1939;  -- 	ADD		Bit6			; C
            011 : 9804;  -- 	OUT		Hex0
-           012 : 1925;  -- 	ADD		Channel
+           012 : 192F;  -- 	ADD		Channel
            013 : 9840;  -- 	OUT		Output
            014 : B803;  -- 	LOADI	3				; 3	
            015 : 6007;  -- 	SHIFT	7			
-           016 : 4931;  -- 	AND		Bit9_7			
-           017 : 192A;  -- 	ADD		Bit4			; E
+           016 : 493E;  -- 	AND		Bit9_7			
+           017 : 1937;  -- 	ADD		Bit4			; E
            018 : 9840;  -- 	OUT		Output			; R channel
-           019 : 811E;  -- 	CALL	Delay_Triplet
+           019 : 8128;  -- 	CALL	Delay_Triplet
            01A : B800;  -- 	LOADI	0
            01B : 9840;  -- 	OUT		Output			; Reset R channel
            01C : B804;  -- 	LOADI	4				; 4		
            01D : 6007;  -- 	SHIFT	7			
-           01E : 4931;  -- 	AND		Bit9_7			
-           01F : 192A;  -- 	ADD		Bit4			; E
+           01E : 493E;  -- 	AND		Bit9_7			
+           01F : 1937;  -- 	ADD		Bit4			; E
            020 : 9804;  -- 	OUT		Hex0
-           021 : 1925;  -- 	ADD		Channel			; L channel
+           021 : 192F;  -- 	ADD		Channel			; L channel
            022 : 9840;  -- 	OUT		Output
            023 : B803;  -- 	LOADI	3				; 3	
            024 : 6007;  -- 	SHIFT	7			
-           025 : 4931;  -- 	AND		Bit9_7			
-           026 : 1928;  -- 	ADD		Bit2			; G
+           025 : 493E;  -- 	AND		Bit9_7			
+           026 : 1935;  -- 	ADD		Bit2			; G
            027 : 9840;  -- 	OUT		Output			; R channel
-           028 : 811E;  -- 	CALL	Delay_Triplet
+           028 : 8128;  -- 	CALL	Delay_Triplet
            029 : B800;  -- 	LOADI	0
            02A : 9840;  -- 	OUT		Output			; Reset R channel
            02B : B804;  -- 	LOADI	4				; 4
            02C : 6007;  -- 	SHIFT	7			
-           02D : 4931;  -- 	AND		Bit9_7			
-           02E : 1928;  -- 	ADD		Bit2			; G
+           02D : 493E;  -- 	AND		Bit9_7			
+           02E : 1935;  -- 	ADD		Bit2			; G
            02F : 9804;  -- 	OUT		Hex0
-           030 : 1925;  -- 	ADD		Channel			; L channel
+           030 : 192F;  -- 	ADD		Channel			; L channel
            031 : 9840;  -- 	OUT		Output
            032 : B803;  -- 	LOADI	3				; 3
            033 : 6007;  -- 	SHIFT	7			
-           034 : 4931;  -- 	AND		Bit9_7			
-           035 : 192A;  -- 	ADD		Bit4			; E
+           034 : 493E;  -- 	AND		Bit9_7			
+           035 : 1937;  -- 	ADD		Bit4			; E
            036 : 9840;  -- 	OUT		Output			; R channel
-           037 : 811E;  -- 	CALL	Delay_Triplet
+           037 : 8128;  -- 	CALL	Delay_Triplet
            038 : B800;  -- 	LOADI	0
            039 : 9840;  -- 	OUT		Output			; Reset R channel
            03A : B805;  -- 	LOADI	5				; 5
            03B : 6007;  -- 	SHIFT	7			
-           03C : 4931;  -- 	AND		Bit9_7			
-           03D : 192C;  -- 	ADD		Bit6			; C
+           03C : 493E;  -- 	AND		Bit9_7			
+           03D : 1939;  -- 	ADD		Bit6			; C
            03E : 9804;  -- 	OUT		Hex0
-           03F : 1925;  -- 	ADD		Channel			; L channel
+           03F : 192F;  -- 	ADD		Channel			; L channel
            040 : 9840;  -- 	OUT		Output
            041 : B803;  -- 	LOADI	3				; 3
            042 : 6007;  -- 	SHIFT	7			
-           043 : 4931;  -- 	AND		Bit9_7			
-           044 : 1928;  -- 	ADD		Bit2			; G
+           043 : 493E;  -- 	AND		Bit9_7			
+           044 : 1935;  -- 	ADD		Bit2			; G
            045 : 9840;  -- 	OUT		Output			; R channel
-           046 : 811E;  -- 	CALL	Delay_Triplet
+           046 : 8128;  -- 	CALL	Delay_Triplet
            047 : B800;  -- 	LOADI	0
            048 : 9840;  -- 	OUT		Output			; Reset R channel
            049 : B805;  -- 	LOADI	5				; 5
            04A : 6007;  -- 	SHIFT	7			
-           04B : 4931;  -- 	AND		Bit9_7			
-           04C : 192A;  -- 	ADD		Bit4			; E
+           04B : 493E;  -- 	AND		Bit9_7			
+           04C : 1937;  -- 	ADD		Bit4			; E
            04D : 9804;  -- 	OUT		Hex0
-           04E : 1925;  -- 	ADD		Channel			; L channel
+           04E : 192F;  -- 	ADD		Channel			; L channel
            04F : 9840;  -- 	OUT		Output
            050 : B804;  -- 	LOADI	4				; 4
            051 : 6007;  -- 	SHIFT	7			
-           052 : 4931;  -- 	AND		Bit9_7			
-           053 : 192C;  -- 	ADD		Bit6			; C
+           052 : 493E;  -- 	AND		Bit9_7			
+           053 : 1939;  -- 	ADD		Bit6			; C
            054 : 9840;  -- 	OUT		Output			; R channel
-           055 : 811E;  -- 	CALL	Delay_Triplet
+           055 : 8128;  -- 	CALL	Delay_Triplet
            056 : B800;  -- 	LOADI	0
            057 : 9840;  -- 	OUT		Output			; Reset R channel
            058 : B805;  -- 	LOADI	5				; 5
            059 : 6007;  -- 	SHIFT	7			
-           05A : 4931;  -- 	AND		Bit9_7			
-           05B : 192A;  -- 	ADD		Bit4			; G
+           05A : 493E;  -- 	AND		Bit9_7			
+           05B : 1937;  -- 	ADD		Bit4			; G
            05C : 9804;  -- 	OUT		Hex0
-           05D : 1925;  -- 	ADD		Channel			; L channel
+           05D : 192F;  -- 	ADD		Channel			; L channel
            05E : 9840;  -- 	OUT		Output
            05F : B804;  -- 	LOADI	4				; 4
            060 : 6007;  -- 	SHIFT	7			
-           061 : 4931;  -- 	AND		Bit9_7			
-           062 : 192A;  -- 	ADD		Bit4			; E
+           061 : 493E;  -- 	AND		Bit9_7			
+           062 : 1937;  -- 	ADD		Bit4			; E
            063 : 9840;  -- 	OUT		Output			; R channel
-           064 : 811A;  -- 	CALL	Delay
+           064 : 8124;  -- 	CALL	Delay
            065 : B800;  -- 	LOADI	0
            066 : 9840;  -- 	OUT		Output			; Reset R channel
            067 : B805;  -- 	LOADI	5				; 5
            068 : 6007;  -- 	SHIFT	7			
-           069 : 4931;  -- 	AND		Bit9_7			
-           06A : 192A;  -- 	ADD		Bit4			; E
+           069 : 493E;  -- 	AND		Bit9_7			
+           06A : 1937;  -- 	ADD		Bit4			; E
            06B : 9804;  -- 	OUT		Hex0
-           06C : 1925;  -- 	ADD		Channel			; L channel
+           06C : 192F;  -- 	ADD		Channel			; L channel
            06D : 9840;  -- 	OUT		Output
            06E : B804;  -- 	LOADI	4				; 4
            06F : 6007;  -- 	SHIFT	7			
-           070 : 4931;  -- 	AND		Bit9_7			
-           071 : 192C;  -- 	ADD		Bit6			; C
+           070 : 493E;  -- 	AND		Bit9_7			
+           071 : 1939;  -- 	ADD		Bit6			; C
            072 : 9840;  -- 	OUT		Output			; R channel
-           073 : 811A;  -- 	CALL	Delay
+           073 : 8124;  -- 	CALL	Delay
            074 : B800;  -- 	LOADI	0
            075 : 9840;  -- 	OUT		Output			; Reset R channel
            076 : B803;  -- 	LOADI	3				; 3
            077 : 6007;  -- 	SHIFT	7			
-           078 : 4931;  -- 	AND		Bit9_7			
+           078 : 493E;  -- 	AND		Bit9_7			
            079 : 1806;  -- 	ADD		&B0000000110	; Ab
            07A : 9804;  -- 	OUT		Hex0
-           07B : 1925;  -- 	ADD		Channel			; L channel
+           07B : 192F;  -- 	ADD		Channel			; L channel
            07C : 9840;  -- 	OUT		Output
-           07D : 811E;  -- 	CALL	Delay_Triplet
+           07D : 8128;  -- 	CALL	Delay_Triplet
            07E : B800;  -- 	LOADI	0
            07F : 9840;  -- 	OUT		Output			; Reset R channel
            080 : B804;  -- 	LOADI	4				; 4
            081 : 6007;  -- 	SHIFT	7			
-           082 : 4931;  -- 	AND		Bit9_7			
-           083 : 192C;  -- 	ADD		Bit6			; C
+           082 : 493E;  -- 	AND		Bit9_7			
+           083 : 1939;  -- 	ADD		Bit6			; C
            084 : 9804;  -- 	OUT		Hex0
-           085 : 1925;  -- 	ADD		Channel			; L channel
+           085 : 192F;  -- 	ADD		Channel			; L channel
            086 : 9840;  -- 	OUT		Output
            087 : B803;  -- 	LOADI	3				; 3
            088 : 6007;  -- 	SHIFT	7			
-           089 : 4931;  -- 	AND		Bit9_7			
-           08A : 1830;  -- 	ADD		&B0000110000	; Eb
+           089 : 493E;  -- 	AND		Bit9_7			
+           08A : 1930;  -- 	ADD		Eb				; Eb
            08B : 9840;  -- 	OUT		Output			; R channel
-           08C : 811E;  -- 	CALL	Delay_Triplet
+           08C : 8128;  -- 	CALL	Delay_Triplet
            08D : B800;  -- 	LOADI	0
            08E : 9840;  -- 	OUT		Output			; Reset R channel
            08F : B804;  -- 	LOADI	4				; 4
            090 : 6007;  -- 	SHIFT	7			
-           091 : 4931;  -- 	AND		Bit9_7			
-           092 : 1830;  -- 	ADD		&B0000110000	; Eb
+           091 : 493E;  -- 	AND		Bit9_7			
+           092 : 1930;  -- 	ADD		Eb				; Eb
            093 : 9804;  -- 	OUT		Hex0
-           094 : 1925;  -- 	ADD		Channel			; L channel
+           094 : 192F;  -- 	ADD		Channel			; L channel
            095 : 9840;  -- 	OUT		Output
            096 : B803;  -- 	LOADI	3				; 3
            097 : 6007;  -- 	SHIFT	7			
-           098 : 4931;  -- 	AND		Bit9_7			
-           099 : 1806;  -- 	ADD		&B0000000110	; Ab
+           098 : 493E;  -- 	AND		Bit9_7			
+           099 : 1931;  -- 	ADD		Ab				; Ab
            09A : 9840;  -- 	OUT		Output			; R channel
-           09B : 811E;  -- 	CALL	Delay_Triplet
+           09B : 8128;  -- 	CALL	Delay_Triplet
            09C : B800;  -- 	LOADI	0
            09D : 9840;  -- 	OUT		Output			; Reset R channel
            09E : B804;  -- 	LOADI	4				; 4
            09F : 6007;  -- 	SHIFT	7			
-           0A0 : 4931;  -- 	AND		Bit9_7			
-           0A1 : 1806;  -- 	ADD		&B0000000110	; Ab
+           0A0 : 493E;  -- 	AND		Bit9_7			
+           0A1 : 1931;  -- 	ADD		Ab				; Ab
            0A2 : 9804;  -- 	OUT		Hex0
-           0A3 : 1925;  -- 	ADD		Channel			; L channel
+           0A3 : 192F;  -- 	ADD		Channel			; L channel
            0A4 : 9840;  -- 	OUT		Output
            0A5 : B803;  -- 	LOADI	3				; 3
            0A6 : 6007;  -- 	SHIFT	7			
-           0A7 : 4931;  -- 	AND		Bit9_7			
-           0A8 : 1830;  -- 	ADD		&B0000110000	; Eb
+           0A7 : 493E;  -- 	AND		Bit9_7			
+           0A8 : 1930;  -- 	ADD		Eb				; Eb
            0A9 : 9840;  -- 	OUT		Output			; R channel
-           0AA : 811E;  -- 	CALL	Delay_Triplet
+           0AA : 8128;  -- 	CALL	Delay_Triplet
            0AB : B800;  -- 	LOADI	0
            0AC : 9840;  -- 	OUT		Output			; Reset R channel
            0AD : B805;  -- 	LOADI	5				; 5
            0AE : 6007;  -- 	SHIFT	7			
-           0AF : 4931;  -- 	AND		Bit9_7			
-           0B0 : 192C;  -- 	ADD		Bit6			; C
+           0AF : 493E;  -- 	AND		Bit9_7			
+           0B0 : 1939;  -- 	ADD		Bit6			; C
            0B1 : 9804;  -- 	OUT		Hex0
-           0B2 : 1925;  -- 	ADD		Channel			; L channel
+           0B2 : 192F;  -- 	ADD		Channel			; L channel
            0B3 : 9840;  -- 	OUT		Output
            0B4 : B803;  -- 	LOADI	3				; 3
            0B5 : 6007;  -- 	SHIFT	7			
-           0B6 : 4931;  -- 	AND		Bit9_7			
-           0B7 : 1806;  -- 	ADD		&B0000000110	; Ab
+           0B6 : 493E;  -- 	AND		Bit9_7			
+           0B7 : 1931;  -- 	ADD		Ab				; Ab
            0B8 : 9840;  -- 	OUT		Output			; R channel
-           0B9 : 811E;  -- 	CALL	Delay_Triplet
+           0B9 : 8128;  -- 	CALL	Delay_Triplet
            0BA : B800;  -- 	LOADI	0
            0BB : 9840;  -- 	OUT		Output			; Reset R channel
            0BC : B805;  -- 	LOADI	5				; 5
            0BD : 6007;  -- 	SHIFT	7			
-           0BE : 4931;  -- 	AND		Bit9_7			
-           0BF : 1830;  -- 	ADD		&B0000110000	; Eb
+           0BE : 493E;  -- 	AND		Bit9_7			
+           0BF : 1930;  -- 	ADD		Eb				; Eb
            0C0 : 9804;  -- 	OUT		Hex0
-           0C1 : 1925;  -- 	ADD		Channel			; L channel
+           0C1 : 192F;  -- 	ADD		Channel			; L channel
            0C2 : 9840;  -- 	OUT		Output
            0C3 : B804;  -- 	LOADI	4				; 4
            0C4 : 6007;  -- 	SHIFT	7			
-           0C5 : 4931;  -- 	AND		Bit9_7			
-           0C6 : 192C;  -- 	ADD		Bit6			; C
+           0C5 : 493E;  -- 	AND		Bit9_7			
+           0C6 : 1939;  -- 	ADD		Bit6			; C
            0C7 : 9840;  -- 	OUT		Output			; R channel
-           0C8 : 811E;  -- 	CALL	Delay_Triplet
+           0C8 : 8128;  -- 	CALL	Delay_Triplet
            0C9 : B800;  -- 	LOADI	0
            0CA : 9840;  -- 	OUT		Output			; Reset R channel
            0CB : B805;  -- 	LOADI	5				; 5
            0CC : 6007;  -- 	SHIFT	7			
-           0CD : 4931;  -- 	AND		Bit9_7			
-           0CE : 1806;  -- 	ADD		&B0000000110	; Ab
+           0CD : 493E;  -- 	AND		Bit9_7			
+           0CE : 1931;  -- 	ADD		Ab				; Ab
            0CF : 9804;  -- 	OUT		Hex0
-           0D0 : 1925;  -- 	ADD		Channel			; L channel
+           0D0 : 192F;  -- 	ADD		Channel			; L channel
            0D1 : 9840;  -- 	OUT		Output
            0D2 : B804;  -- 	LOADI	4				; 4
            0D3 : 6007;  -- 	SHIFT	7			
-           0D4 : 4931;  -- 	AND		Bit9_7			
-           0D5 : 1830;  -- 	ADD		&B0000110000	; Eb
+           0D4 : 493E;  -- 	AND		Bit9_7			
+           0D5 : 1930;  -- 	ADD		Eb				; Eb
            0D6 : 9840;  -- 	OUT		Output			; R channel
-           0D7 : 811A;  -- 	CALL	Delay
+           0D7 : 8124;  -- 	CALL	Delay
            0D8 : B800;  -- 	LOADI	0
            0D9 : 9840;  -- 	OUT		Output			; Reset R channel
            0DA : B805;  -- 	LOADI	5				; 5
            0DB : 6007;  -- 	SHIFT	7			
-           0DC : 4931;  -- 	AND		Bit9_7			
-           0DD : 1830;  -- 	ADD		&B0000110000	; Eb
+           0DC : 493E;  -- 	AND		Bit9_7			
+           0DD : 1930;  -- 	ADD		Eb				; Eb
            0DE : 9804;  -- 	OUT		Hex0
-           0DF : 1925;  -- 	ADD		Channel			; L channel
+           0DF : 192F;  -- 	ADD		Channel			; L channel
            0E0 : 9840;  -- 	OUT		Output
            0E1 : B804;  -- 	LOADI	4				; 4
            0E2 : 6007;  -- 	SHIFT	7			
-           0E3 : 4931;  -- 	AND		Bit9_7			
-           0E4 : 192C;  -- 	ADD		Bit6			; C
+           0E3 : 493E;  -- 	AND		Bit9_7			
+           0E4 : 1939;  -- 	ADD		Bit6			; C
            0E5 : 9840;  -- 	OUT		Output			; R channel
-           0E6 : 811A;  -- 	CALL	Delay
-           0E7 : B800;  -- 	LOADI	0				; Reset sound
-           0E8 : 9840;  -- 	OUT		Output
-           0E9 : 0925;  -- 	LOAD	Channel
-           0EA : 9840;  -- 	OUT		Output
-           0EB : B803;  -- 	LOADI	3				; Reset octave
-           0EC : 1123;  -- 	STORE	Octave
-           0ED : 28EE;  -- 	JUMP	Loop
-           0EE : 9000;  -- 	IN 		Switches		; Take in switch bits
-           0EF : 1124;  -- 	STORE	SwitchVar
-           0F0 : 492D;  -- 	AND		Bit7			; Check if SW7 is up for octave up
-           0F1 : 390A;  -- 	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
-           0F2 : 0924;  -- 	LOAD	SwitchVar
-           0F3 : 492E;  -- 	AND		Bit8			; Check if SW8 if up for octave down
-           0F4 : 390E;  -- 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
-           0F5 : 0923;  -- 	LOAD	Octave			
-           0F6 : 6007;  -- 	SHIFT	7				; Shift octave 7 places
-           0F7 : 4931;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
-           0F8 : 1123;  -- 	STORE 	Octave
-           0F9 : 0924;  -- 	LOAD	SwitchVar		; Get toggle and shift 15 places
-           0FA : 492F;  -- 	AND		Bit9
-           0FB : 6006;  -- 	SHIFT	6
-           0FC : 4932;  -- 	AND		Bit15
-           0FD : 1125;  -- 	STORE	Channel
-           0FE : 0924;  -- 	LOAD	SwitchVar
-           0FF : 4930;  -- 	AND		Bit6_0
-           100 : 1923;  -- 	ADD		Octave			; Append the octave
-           101 : 1925;  -- 	ADD		Channel			; Append the channel toggle		
-           102 : 9840;  -- 	OUT 	Output			; Out the bit vector to peripheral
-           103 : 0923;  -- 	LOAD	Octave
-           104 : 6017;  -- 	SHIFT	-7
-           105 : 1123;  -- 	STORE 	Octave
-           106 : 0923;  -- 	LOAD	Octave
-           107 : 6801;  -- 	ADDI	1
-           108 : 9804;  -- 	OUT		Hex0			; Out the current octave to peripheral
-           109 : 28EE;  -- 	JUMP	Loop
-           10A : 9000;  -- 	IN		Switches
-           10B : 492D;  -- 	AND		Bit7
-           10C : 4112;  -- 	JZERO	OctaveUp
-           10D : 290A;  -- 	JUMP	OctaveUpWait
-           10E : 9000;  -- 	IN		Switches
-           10F : 492E;  -- 	AND		Bit8
-           110 : 4116;  -- 	JZERO	OctaveDown
-           111 : 290E;  -- 	JUMP	OctaveDownWait
-           112 : 0923;  -- 	LOAD	Octave
-           113 : 6801;  -- 	ADDI	1
-           114 : 1123;  -- 	STORE	Octave
-           115 : 28EE;  -- 	JUMP	Loop
-           116 : 0923;  -- 	LOAD	Octave
-           117 : 6FFF;  -- 	ADDI	-1
-           118 : 1123;  -- 	STORE	Octave
-           119 : 28EE;  -- 	JUMP	Loop
-           11A : 9802;  -- 	OUT		Timer
-           11B : 9002;  -- 	IN		Timer
-           11C : 6FFA;  -- 	ADDI	-6
-           11D : 311B;  -- 	JNEG	WaitingLoop
-           11E : 9802;  -- 	OUT		Timer
-           11F : 9002;  -- 	IN		Timer
-           120 : 6FFE;  -- 	ADDI	-2
-           121 : 311F;  -- 	JNEG	WaitingLoop_Triplet
-           122 : 8800;  -- 	RETURN
-           123 : 0003;  -- Octave:		DW 3
-           124 : 0000;  -- SwitchVar:	DW 0
-           125 : 0000;  -- Channel:	DW 0
-           126 : 0001;  -- Bit0:		DW &B0000000001
-           127 : 0002;  -- Bit1:		DW &B0000000010
-           128 : 0004;  -- Bit2:		DW &B0000000100
-           129 : 0008;  -- Bit3:		DW &B0000001000
-           12A : 0010;  -- Bit4:		DW &B0000010000
-           12B : 0020;  -- Bit5:		DW &B0000100000
-           12C : 0040;  -- Bit6:		DW &B0001000000
-           12D : 0080;  -- Bit7:		DW &B0010000000
-           12E : 0100;  -- Bit8:		DW &B0100000000
-           12F : 0200;  -- Bit9:		DW &B1000000000
-           130 : 007F;  -- Bit6_0: 	DW &B0001111111
-           131 : 0380;  -- Bit9_7:		DW &B1110000000
-           132 : 8000;  -- Bit15:		DW &B1000000000000000
-           133 : FFFF;  -- Bit15_0:	DW &B1111111111111111
+           0E6 : 8124;  -- 	CALL	Delay
+           0E7 : B800;  -- 	LOADI	0
+           0E8 : 9840;  -- 	OUT		Output			; Reset R channel
+           0E9 : B803;  -- 	LOADI	3				; 3
+           0EA : 6007;  -- 	SHIFT	7			
+           0EB : 493E;  -- 	AND		Bit9_7			
+           0EC : 1931;  -- 	ADD		Ab				; Ab
+           0ED : 9804;  -- 	OUT		Hex0
+           0EE : 192F;  -- 	ADD		Channel			; L channel
+           0EF : 9840;  -- 	OUT		Output
+           0F0 : 8128;  -- 	CALL	Delay_Triplet
+           0F1 : B800;  -- 	LOADI	0				; Reset sound
+           0F2 : 9840;  -- 	OUT		Output
+           0F3 : 092F;  -- 	LOAD	Channel
+           0F4 : 9840;  -- 	OUT		Output
+           0F5 : B803;  -- 	LOADI	3				; Reset octave
+           0F6 : 112D;  -- 	STORE	Octave
+           0F7 : 28F8;  -- 	JUMP	Loop
+           0F8 : 9000;  -- 	IN 		Switches		; Take in switch bits
+           0F9 : 112E;  -- 	STORE	SwitchVar
+           0FA : 493A;  -- 	AND		Bit7			; Check if SW7 is up for octave up
+           0FB : 3914;  -- 	JPOS	OctaveUpWait	; Constantly loop until SW7 is down
+           0FC : 092E;  -- 	LOAD	SwitchVar
+           0FD : 493B;  -- 	AND		Bit8			; Check if SW8 if up for octave down
+           0FE : 3918;  -- 	JPOS	OctaveDownWait	; Constantly loop until SW8 is down
+           0FF : 092D;  -- 	LOAD	Octave			
+           100 : 6007;  -- 	SHIFT	7				; Shift octave 7 places
+           101 : 493E;  -- 	AND		Bit9_7			; Bitmask 9_7 to make sure no overflow
+           102 : 112D;  -- 	STORE 	Octave
+           103 : 092E;  -- 	LOAD	SwitchVar		; Get toggle and shift 15 places
+           104 : 493C;  -- 	AND		Bit9
+           105 : 6006;  -- 	SHIFT	6
+           106 : 493F;  -- 	AND		Bit15
+           107 : 112F;  -- 	STORE	Channel
+           108 : 092E;  -- 	LOAD	SwitchVar
+           109 : 493D;  -- 	AND		Bit6_0
+           10A : 192D;  -- 	ADD		Octave			; Append the octave
+           10B : 192F;  -- 	ADD		Channel			; Append the channel toggle		
+           10C : 9840;  -- 	OUT 	Output			; Out the bit vector to peripheral
+           10D : 092D;  -- 	LOAD	Octave
+           10E : 6017;  -- 	SHIFT	-7
+           10F : 112D;  -- 	STORE 	Octave
+           110 : 092D;  -- 	LOAD	Octave
+           111 : 6801;  -- 	ADDI	1
+           112 : 9804;  -- 	OUT		Hex0			; Out the current octave to peripheral
+           113 : 28F8;  -- 	JUMP	Loop
+           114 : 9000;  -- 	IN		Switches
+           115 : 493A;  -- 	AND		Bit7
+           116 : 411C;  -- 	JZERO	OctaveUp
+           117 : 2914;  -- 	JUMP	OctaveUpWait
+           118 : 9000;  -- 	IN		Switches
+           119 : 493B;  -- 	AND		Bit8
+           11A : 4120;  -- 	JZERO	OctaveDown
+           11B : 2918;  -- 	JUMP	OctaveDownWait
+           11C : 092D;  -- 	LOAD	Octave
+           11D : 6801;  -- 	ADDI	1
+           11E : 112D;  -- 	STORE	Octave
+           11F : 28F8;  -- 	JUMP	Loop
+           120 : 092D;  -- 	LOAD	Octave
+           121 : 6FFF;  -- 	ADDI	-1
+           122 : 112D;  -- 	STORE	Octave
+           123 : 28F8;  -- 	JUMP	Loop
+           124 : 9802;  -- 	OUT		Timer
+           125 : 9002;  -- 	IN		Timer
+           126 : 6FFA;  -- 	ADDI	-6
+           127 : 3125;  -- 	JNEG	WaitingLoop
+           128 : 9802;  -- 	OUT		Timer
+           129 : 9002;  -- 	IN		Timer
+           12A : 6FFE;  -- 	ADDI	-2
+           12B : 3129;  -- 	JNEG	WaitingLoop_Triplet
+           12C : 8800;  -- 	RETURN
+           12D : 0003;  -- Octave:		DW 3
+           12E : 0000;  -- SwitchVar:	DW 0
+           12F : 0000;  -- Channel:	DW 0
+           130 : 0030;  -- Eb:			DW &B0000110000
+           131 : 0006;  -- Ab:			DW &B0000000110
+           132 : 0003;  -- Bb:			DW &B0000000011
+           133 : 0001;  -- Bit0:		DW &B0000000001
+           134 : 0002;  -- Bit1:		DW &B0000000010
+           135 : 0004;  -- Bit2:		DW &B0000000100
+           136 : 0008;  -- Bit3:		DW &B0000001000
+           137 : 0010;  -- Bit4:		DW &B0000010000
+           138 : 0020;  -- Bit5:		DW &B0000100000
+           139 : 0040;  -- Bit6:		DW &B0001000000
+           13A : 0080;  -- Bit7:		DW &B0010000000
+           13B : 0100;  -- Bit8:		DW &B0100000000
+           13C : 0200;  -- Bit9:		DW &B1000000000
+           13D : 007F;  -- Bit6_0: 	DW &B0001111111
+           13E : 0380;  -- Bit9_7:		DW &B1110000000
+           13F : 8000;  -- Bit15:		DW &B1000000000000000
+           140 : FFFF;  -- Bit15_0:	DW &B1111111111111111
   END;
