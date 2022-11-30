@@ -32,7 +32,6 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	3				; 3	
 	SHIFT	7			
 	AND		Bit9_7			
@@ -49,7 +48,6 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	3				; 3	
 	SHIFT	7			
 	AND		Bit9_7			
@@ -66,7 +64,6 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
@@ -83,7 +80,6 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
@@ -100,7 +96,6 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
@@ -117,7 +112,6 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
@@ -134,37 +128,150 @@ ORG 0
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	LOADI	4				; 4
 	SHIFT	7			
 	AND		Bit9_7			
 	ADD		Bit6			; C
 	OUT		Output			; R channel
 	CALL	Delay
+	
+	; Measure 2
 	; Ab3 triplet
 	LOADI	0
 	OUT		Output			; Reset R channel
-	LOADI	3				; 5
+	LOADI	3				; 3
 	SHIFT	7			
 	AND		Bit9_7			
 	ADD		&B0000000110	; Ab
 	OUT		Hex0
 	ADD		Channel			; L channel
 	OUT		Output
-	OUT		Hex0
 	CALL	Delay_Triplet
-	
+	; C4 and Eb3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit6			; C
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000110000	; Eb
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Eb4 and Ab3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000110000	; Eb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000000110	; Ab
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Ab4 and Eb3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000000110	; Ab
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000110000	; Eb
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; C5 and Ab3 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit6			; C
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	3				; 3
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000000110	; Ab
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Eb5 and C4 triplet
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000110000	; Eb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit6			; C
+	OUT		Output			; R channel
+	CALL	Delay_Triplet
+	; Ab5 and Eb4 quarter
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000000110	; Ab
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000110000	; Eb
+	OUT		Output			; R channel
+	CALL	Delay
+	; Eb5 and C4 quarter
+	LOADI	0
+	OUT		Output			; Reset R channel
+	LOADI	5				; 5
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		&B0000110000	; Eb
+	OUT		Hex0
+	ADD		Channel			; L channel
+	OUT		Output
+	LOADI	4				; 4
+	SHIFT	7			
+	AND		Bit9_7			
+	ADD		Bit6			; C
+	OUT		Output			; R channel
+	CALL	Delay
 	
 	LOADI	0				; Reset sound
 	OUT		Output
 	LOAD	Channel
 	OUT		Output
 	
-	LOADI	3
+	LOADI	3				; Reset octave
 	STORE	Octave
 	
 	JUMP	Loop
 	
+	
+; Main interactive demo functionality
 Loop:
 	IN 		Switches		; Take in switch bits
 	STORE	SwitchVar
