@@ -456,11 +456,12 @@ ORG 0
 	ADD		Bit6			; C
 	ADD		Bit13			; Square
 	OUT		Output			; R channel
+	SHIFT	-13
+	OUT		LEDs
 	CALL	Delay
 	CALL	Delay
 	CALL	Delay
 	CALL	Delay
-	
 	
 	LOADI	0				; Reset sound
 	OUT		Output
